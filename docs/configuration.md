@@ -1,10 +1,10 @@
 # Configuration Reference
 
-Blu is configured via a JSON file named `.blu.json`. The application looks for this file in the following locations (in order of priority):
+Loophole is configured via a JSON file named `.loophole.json`. The application looks for this file in the following locations (in order of priority):
 
-1. Path specified by the `BLU_CONFIG` environment variable.
+1. Path specified by the `LOOPHOLE_CONFIG` environment variable.
 2. The current working directory.
-3. Your home directory (`~/.blu.json` or `%USERPROFILE%\.blu.json`).
+3. Your home directory (`~/.loophole.json` or `%USERPROFILE%\.loophole.json`).
 
 ## Example Configuration
 
@@ -49,7 +49,7 @@ A map of agent configurations. Currently, the most important agent is `coder`.
 - **bearerToken**: Manually provide a GitHub Copilot bearer token if automatic discovery fails.
 
 ### autoCompact
-Boolean. When set to true, Blu will automatically compress older conversation history when the context window is near its limit. This preserves recent context while discarding older, less relevant messages to stay within token limits.
+Boolean. When set to true, Loophole will automatically compress older conversation history when the context window is near its limit. This preserves recent context while discarding older, less relevant messages to stay within token limits.
 
 ### mcpServers
 A map of Model Context Protocol server configurations.
@@ -63,5 +63,5 @@ A map of Model Context Protocol server configurations.
 - `OPENAI_API_KEY`: API key for OpenAI models.
 - `GEMINI_API_KEY`: API key for Google Gemini models.
 - `GITHUB_TOKEN`: Used for authenticating with GitHub Copilot if NOT using the GitHub CLI.
-- `BLU_DEBUG`: Set to `true` to enable verbose logging to `~/.blu/logs/`.
-- `BLU_CONFIG`: Explicitly set the path to your `.blu.json` configuration file.
+- `LOOPHOLE_DEBUG`: Set to `true` to enable verbose logging to `~/.loophole/logs/`.
+- `LOOPHOLE_CONFIG`: Explicitly set the path to your `.loophole.json` configuration file.

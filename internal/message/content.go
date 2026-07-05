@@ -5,7 +5,7 @@ import (
 	"slices"
 	"time"
 
-	"github.com/Get-Blu/blu-code/internal/llm/models"
+	"github.com/loophole-ai/loophole-cli/internal/llm/models"
 )
 
 type MessageRole string

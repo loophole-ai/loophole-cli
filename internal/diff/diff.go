@@ -15,8 +15,8 @@ import (
 	"github.com/aymanbagabas/go-udiff"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/x/ansi"
-	"github.com/Get-Blu/blu-code/internal/config"
-	"github.com/Get-Blu/blu-code/internal/tui/theme"
+	"github.com/loophole-ai/loophole-cli/internal/config"
+	"github.com/loophole-ai/loophole-cli/internal/tui/theme"
 	"github.com/sergi/go-diff/diffmatchpatch"
 )
 
@@ -344,7 +344,7 @@ func SyntaxHighlight(w io.Writer, source, fileName, formatter string, bg lipglos
 
 	// Dynamic theme based on current theme values
 	syntaxThemeXml := fmt.Sprintf(`
-	<style name="blu-theme">
+	<style name="loophole-theme">
 	<!-- Base colors -->
 	<entry type="Background" style="bg:%s"/>
 	<entry type="Text" style="%s"/>

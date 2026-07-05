@@ -14,14 +14,14 @@ import (
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/Get-Blu/blu-code/internal/app"
-	"github.com/Get-Blu/blu-code/internal/config"
-	"github.com/Get-Blu/blu-code/internal/logging"
-	"github.com/Get-Blu/blu-code/internal/message"
-	"github.com/Get-Blu/blu-code/internal/tui/image"
-	"github.com/Get-Blu/blu-code/internal/tui/styles"
-	"github.com/Get-Blu/blu-code/internal/tui/theme"
-	"github.com/Get-Blu/blu-code/internal/tui/util"
+	"github.com/loophole-ai/loophole-cli/internal/app"
+	"github.com/loophole-ai/loophole-cli/internal/config"
+	"github.com/loophole-ai/loophole-cli/internal/logging"
+	"github.com/loophole-ai/loophole-cli/internal/message"
+	"github.com/loophole-ai/loophole-cli/internal/tui/image"
+	"github.com/loophole-ai/loophole-cli/internal/tui/styles"
+	"github.com/loophole-ai/loophole-cli/internal/tui/theme"
+	"github.com/loophole-ai/loophole-cli/internal/tui/util"
 )
 
 const (

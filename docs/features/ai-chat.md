@@ -1,10 +1,10 @@
 # AI Chat and Interaction
 
-The chat interface is the primary way to interact with Blu. It allows you to describe tasks, ask questions about your code, and review proposed changes.
+The chat interface is the primary way to interact with Loophole. It allows you to describe tasks, ask questions about your code, and review proposed changes.
 
 ## Message Handling
 
-Blu maintains a conversation history for each session. When you send a message, the AI analyzes your request and decides whether it needs to use any of its available tools (like reading a file or running a grep search) to provide a better answer.
+Loophole maintains a conversation history for each session. When you send a message, the AI analyzes your request and decides whether it needs to use any of its available tools (like reading a file or running a grep search) to provide a better answer.
 
 ## Model Selection
 
@@ -16,7 +16,7 @@ Use `Ctrl+O` to open the model selection dialog.
 
 ## Context Management
 
-The AI can only see a certain amount of information at once. Blu helps manage this by:
+The AI can only see a certain amount of information at once. Loophole helps manage this by:
 1. Allowing you to manually add files to context.
 2. Automatically suggesting relevant files based on your query.
 3. Compacting old messages to keep the conversation within the model's limits.

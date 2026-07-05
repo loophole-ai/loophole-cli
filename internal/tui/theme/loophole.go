@@ -4,15 +4,15 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-// BluTheme implements the Theme interface with Blu brand colors.
+// LoopholeTheme implements the Theme interface with Loophole brand colors.
 // It provides both dark and light variants.
-type BluTheme struct {
+type LoopholeTheme struct {
 	BaseTheme
 }
 
-// NewBluTheme creates a new instance of the Blu theme.
-func NewBluTheme() *BluTheme {
-	// Blu color palette
+// NewLoopholeTheme creates a new instance of the Loophole theme.
+func NewLoopholeTheme() *LoopholeTheme {
+	// Loophole color palette
 	// Dark mode colors
 	darkBackground := "#212121"
 	darkCurrentLine := "#252525"
@@ -45,7 +45,7 @@ func NewBluTheme() *BluTheme {
 	lightYellow := "#b0851f"    // Emphasized text
 	lightBorder := "#d3d3d3"    // Border color
 
-	theme := &BluTheme{}
+	theme := &LoopholeTheme{}
 
 	// Base colors
 	theme.PrimaryColor = lipgloss.AdaptiveColor{
@@ -271,7 +271,7 @@ func NewBluTheme() *BluTheme {
 }
 
 func init() {
-	// Register the Blu theme with the theme manager
-	RegisterTheme("blu", NewBluTheme())
+	// Register the Loophole theme with the theme manager
+	RegisterTheme("loophole", NewLoopholeTheme())
 }
 

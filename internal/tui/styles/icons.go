@@ -1,7 +1,7 @@
 package styles
 
 const (
-	BluIcon string = "🌀"
+	LoopholeIcon string = "🌀"
 
 	CheckIcon    string = "✓"
 	ErrorIcon    string = "✖"

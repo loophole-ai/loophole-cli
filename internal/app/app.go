@@ -9,17 +9,17 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Get-Blu/blu-code/internal/config"
-	"github.com/Get-Blu/blu-code/internal/db"
-	"github.com/Get-Blu/blu-code/internal/format"
-	"github.com/Get-Blu/blu-code/internal/history"
-	"github.com/Get-Blu/blu-code/internal/llm/agent"
-	"github.com/Get-Blu/blu-code/internal/logging"
-	"github.com/Get-Blu/blu-code/internal/lsp"
-	"github.com/Get-Blu/blu-code/internal/message"
-	"github.com/Get-Blu/blu-code/internal/permission"
-	"github.com/Get-Blu/blu-code/internal/session"
-	"github.com/Get-Blu/blu-code/internal/tui/theme"
+	"github.com/loophole-ai/loophole-cli/internal/config"
+	"github.com/loophole-ai/loophole-cli/internal/db"
+	"github.com/loophole-ai/loophole-cli/internal/format"
+	"github.com/loophole-ai/loophole-cli/internal/history"
+	"github.com/loophole-ai/loophole-cli/internal/llm/agent"
+	"github.com/loophole-ai/loophole-cli/internal/logging"
+	"github.com/loophole-ai/loophole-cli/internal/lsp"
+	"github.com/loophole-ai/loophole-cli/internal/message"
+	"github.com/loophole-ai/loophole-cli/internal/permission"
+	"github.com/loophole-ai/loophole-cli/internal/session"
+	"github.com/loophole-ai/loophole-cli/internal/tui/theme"
 )
 
 type App struct {

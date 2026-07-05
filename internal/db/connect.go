@@ -9,8 +9,8 @@ import (
 	_ "github.com/ncruces/go-sqlite3/driver"
 	_ "github.com/ncruces/go-sqlite3/embed"
 
-	"github.com/Get-Blu/blu-code/internal/config"
-	"github.com/Get-Blu/blu-code/internal/logging"
+	"github.com/loophole-ai/loophole-cli/internal/config"
+	"github.com/loophole-ai/loophole-cli/internal/logging"
 
 	"github.com/pressly/goose/v3"
 )
@@ -23,7 +23,7 @@ func Connect() (*sql.DB, error) {
 	if err := os.MkdirAll(dataDir, 0o700); err != nil {
 		return nil, fmt.Errorf("failed to create data directory: %w", err)
 	}
-	dbPath := filepath.Join(dataDir, "blu.db")
+	dbPath := filepath.Join(dataDir, "loophole.db")
 	// Open the SQLite database
 	db, err := sql.Open("sqlite3", dbPath)
 	if err != nil {

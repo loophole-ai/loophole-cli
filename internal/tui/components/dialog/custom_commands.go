@@ -8,8 +8,8 @@ import (
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/Get-Blu/blu-code/internal/config"
-	"github.com/Get-Blu/blu-code/internal/tui/util"
+	"github.com/loophole-ai/loophole-cli/internal/config"
+	"github.com/loophole-ai/loophole-cli/internal/tui/util"
 )
 
 // Command prefix constants
@@ -30,7 +30,7 @@ func LoadCustomCommands() ([]Command, error) {
 
 	var commands []Command
 
-	// Load user commands from XDG_CONFIG_HOME/blu/commands
+	// Load user commands from XDG_CONFIG_HOME/loophole/commands
 	xdgConfigHome := os.Getenv("XDG_CONFIG_HOME")
 	if xdgConfigHome == "" {
 		// Default to ~/.config if XDG_CONFIG_HOME is not set
@@ -41,7 +41,7 @@ func LoadCustomCommands() ([]Command, error) {
 	}
 
 	if xdgConfigHome != "" {
-		userCommandsDir := filepath.Join(xdgConfigHome, "blu", "commands")
+		userCommandsDir := filepath.Join(xdgConfigHome, "loophole", "commands")
 		userCommands, err := loadCommandsFromDir(userCommandsDir, UserCommandPrefix)
 		if err != nil {
 			// Log error but continue - we'll still try to load other commands
@@ -51,10 +51,10 @@ func LoadCustomCommands() ([]Command, error) {
 		}
 	}
 
-	// Load commands from $HOME/.blu/commands
+	// Load commands from $HOME/.loophole/commands
 	home, err := os.UserHomeDir()
 	if err == nil {
-		homeCommandsDir := filepath.Join(home, ".blu", "commands")
+		homeCommandsDir := filepath.Join(home, ".loophole", "commands")
 		homeCommands, err := loadCommandsFromDir(homeCommandsDir, UserCommandPrefix)
 		if err != nil {
 			// Log error but continue - we'll still try to load other commands

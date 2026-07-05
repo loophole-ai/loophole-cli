@@ -5,11 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/Get-Blu/blu-code/internal/config"
-	"github.com/Get-Blu/blu-code/internal/llm/tools"
-	"github.com/Get-Blu/blu-code/internal/logging"
-	"github.com/Get-Blu/blu-code/internal/permission"
-	"github.com/Get-Blu/blu-code/internal/version"
+	"github.com/loophole-ai/loophole-cli/internal/config"
+	"github.com/loophole-ai/loophole-cli/internal/llm/tools"
+	"github.com/loophole-ai/loophole-cli/internal/logging"
+	"github.com/loophole-ai/loophole-cli/internal/permission"
+	"github.com/loophole-ai/loophole-cli/internal/version"
 
 	"github.com/mark3labs/mcp-go/client"
 	"github.com/mark3labs/mcp-go/mcp"
@@ -50,7 +50,7 @@ func runTool(ctx context.Context, c MCPClient, toolName string, input string) (t
 	initRequest := mcp.InitializeRequest{}
 	initRequest.Params.ProtocolVersion = mcp.LATEST_PROTOCOL_VERSION
 	initRequest.Params.ClientInfo = mcp.Implementation{
-		Name:    "Blu",
+		Name:    "Loophole",
 		Version: version.Version,
 	}
 
@@ -144,7 +144,7 @@ func getTools(ctx context.Context, name string, m config.MCPServer, permissions 
 	initRequest := mcp.InitializeRequest{}
 	initRequest.Params.ProtocolVersion = mcp.LATEST_PROTOCOL_VERSION
 	initRequest.Params.ClientInfo = mcp.Implementation{
-		Name:    "Blu",
+		Name:    "Loophole",
 		Version: version.Version,
 	}
 

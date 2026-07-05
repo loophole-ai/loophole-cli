@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/Get-Blu/blu-code/internal/config"
+	"github.com/loophole-ai/loophole-cli/internal/config"
 )
 
 type LSParams struct {

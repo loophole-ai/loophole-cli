@@ -12,7 +12,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/Get-Blu/blu-code/internal/config"
+	"github.com/loophole-ai/loophole-cli/internal/config"
 )
 
 type PersistentShell struct {
@@ -149,10 +149,10 @@ func (s *PersistentShell) execCommand(command string, timeout time.Duration, ctx
 	}
 
 	tempDir := os.TempDir()
-	stdoutFile := filepath.Join(tempDir, fmt.Sprintf("blu-stdout-%d", time.Now().UnixNano()))
-	stderrFile := filepath.Join(tempDir, fmt.Sprintf("blu-stderr-%d", time.Now().UnixNano()))
-	statusFile := filepath.Join(tempDir, fmt.Sprintf("blu-status-%d", time.Now().UnixNano()))
-	cwdFile := filepath.Join(tempDir, fmt.Sprintf("blu-cwd-%d", time.Now().UnixNano()))
+	stdoutFile := filepath.Join(tempDir, fmt.Sprintf("loophole-stdout-%d", time.Now().UnixNano()))
+	stderrFile := filepath.Join(tempDir, fmt.Sprintf("loophole-stderr-%d", time.Now().UnixNano()))
+	statusFile := filepath.Join(tempDir, fmt.Sprintf("loophole-status-%d", time.Now().UnixNano()))
+	cwdFile := filepath.Join(tempDir, fmt.Sprintf("loophole-cwd-%d", time.Now().UnixNano()))
 
 	defer func() {
 		os.Remove(stdoutFile)

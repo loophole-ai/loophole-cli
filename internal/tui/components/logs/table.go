@@ -7,12 +7,12 @@ import (
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/table"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/Get-Blu/blu-code/internal/logging"
-	"github.com/Get-Blu/blu-code/internal/pubsub"
-	"github.com/Get-Blu/blu-code/internal/tui/layout"
-	"github.com/Get-Blu/blu-code/internal/tui/styles"
-	"github.com/Get-Blu/blu-code/internal/tui/theme"
-	"github.com/Get-Blu/blu-code/internal/tui/util"
+	"github.com/loophole-ai/loophole-cli/internal/logging"
+	"github.com/loophole-ai/loophole-cli/internal/pubsub"
+	"github.com/loophole-ai/loophole-cli/internal/tui/layout"
+	"github.com/loophole-ai/loophole-cli/internal/tui/styles"
+	"github.com/loophole-ai/loophole-cli/internal/tui/theme"
+	"github.com/loophole-ai/loophole-cli/internal/tui/util"
 )
 
 type TableComponent interface {

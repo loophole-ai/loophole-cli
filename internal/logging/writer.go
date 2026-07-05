@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/go-logfmt/logfmt"
-	"github.com/Get-Blu/blu-code/internal/pubsub"
+	"github.com/loophole-ai/loophole-cli/internal/pubsub"
 )
 
 const (

@@ -33,7 +33,7 @@ if (platform === 'win32') {
 } else {
     console.error(`Unsupported platform: ${platform}`);
     console.error('Please download the binary manually from:');
-    console.error(`  https://github.com/Get-Blu/blu-code/releases`);
+    console.error(`  https://github.com/loophole-ai/loophole-cli/releases`);
     process.exit(1);
 }
 
@@ -46,22 +46,22 @@ if (arch === 'x64') {
 } else {
     console.error(`Unsupported architecture: ${arch}`);
     console.error('Please download the binary manually from:');
-    console.error(`  https://github.com/Get-Blu/blu-code/releases`);
+    console.error(`  https://github.com/loophole-ai/loophole-cli/releases`);
     process.exit(1);
 }
 
-// Binary name matches GoReleaser output: blu-linux-amd64, blu-windows-amd64.exe, etc.
-const binName = `blu-${goos}-${goarch}${ext}`;
-const downloadUrl = `https://github.com/Get-Blu/blu-code/releases/download/v${version}/${binName}`;
+// Binary name matches GoReleaser output: loophole-linux-amd64, loophole-windows-amd64.exe, etc.
+const binName = `loophole-${goos}-${goarch}${ext}`;
+const downloadUrl = `https://github.com/loophole-ai/loophole-cli/releases/download/v${version}/${binName}`;
 
 const destDir = path.join(__dirname, '..', 'bin');
 if (!fs.existsSync(destDir)) {
     fs.mkdirSync(destDir, { recursive: true });
 }
 
-const destFile = path.join(destDir, `blu${ext}`);
+const destFile = path.join(destDir, `loophole${ext}`);
 
-console.log(`\nDownloading Blu CLI v${version} for ${goos}/${goarch}...`);
+console.log(`\nDownloading Loophole CLI v${version} for ${goos}/${goarch}...`);
 console.log(`URL: ${downloadUrl}\n`);
 
 /**
@@ -80,7 +80,7 @@ function resolveRedirect(url, maxRedirects = 10) {
                     new Error(
                         `HTTP ${res.statusCode} — binary not found.\n` +
                         `Make sure release v${version} exists at:\n` +
-                        `  https://github.com/Get-Blu/blu-code/releases/tag/v${version}`
+                        `  https://github.com/loophole-ai/loophole-cli/releases/tag/v${version}`
                     )
                 );
             }
@@ -126,14 +126,14 @@ resolveRedirect(downloadUrl)
         if (platform !== 'win32') {
             fs.chmodSync(destFile, 0o755);
         }
-        console.log(`✅  Blu CLI installed to: ${destFile}`);
-        console.log('    Run "blu --version" to verify the installation.\n');
+        console.log(`✅  Loophole CLI installed to: ${destFile}`);
+        console.log('    Run "loophole --version" to verify the installation.\n');
     })
     .catch((err) => {
         console.error(`\n❌  Installation failed: ${err.message}\n`);
         console.error('Manual install options:');
-        console.error('  • Download from: https://github.com/Get-Blu/blu-code/releases');
-        console.error(`  • Homebrew (macOS/Linux): brew install Get-Blu/tap/blu`);
+        console.error('  • Download from: https://github.com/loophole-ai/loophole-cli/releases');
+        console.error(`  • Homebrew (macOS/Linux): brew install loophole-ai/tap/loophole`);
         process.exit(1);
     });
 

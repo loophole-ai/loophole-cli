@@ -9,8 +9,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Get-Blu/blu-code/internal/lsp"
-	"github.com/Get-Blu/blu-code/internal/lsp/protocol"
+	"github.com/loophole-ai/loophole-cli/internal/lsp"
+	"github.com/loophole-ai/loophole-cli/internal/lsp/protocol"
 )
 
 type DiagnosticsParams struct {

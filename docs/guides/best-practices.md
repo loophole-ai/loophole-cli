@@ -1,11 +1,11 @@
-# Best Practices for Using Blu
+# Best Practices for Using Loophole
 
 To get the most out of your AI coding assistant, follow these guidelines for effective interaction and project management.
 
 ## Crafting Prompts
 
 1. Be Specific: Instead of "Fix the bug," try "Fix the null pointer exception when the user submits an empty search string in the search handler."
-2. Provide Context: Mention relevant files or architectural patterns. Even though Blu can search, giving a starting point saves time and tokens.
+2. Provide Context: Mention relevant files or architectural patterns. Even though Loophole can search, giving a starting point saves time and tokens.
 3. Iterative Development: Break down large features into smaller, manageable sub-tasks. Ask the AI to implement the data model first, then the logic, then the interface.
 
 ## Managing Context

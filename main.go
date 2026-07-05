@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/Get-Blu/blu-code/cmd"
-	"github.com/Get-Blu/blu-code/internal/logging"
+	"github.com/loophole-ai/loophole-cli/cmd"
+	"github.com/loophole-ai/loophole-cli/internal/logging"
 )
 
 func main() {

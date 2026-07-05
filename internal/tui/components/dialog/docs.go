@@ -4,10 +4,10 @@ import (
 	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/Get-Blu/blu-code/internal/tui/layout"
-	"github.com/Get-Blu/blu-code/internal/tui/styles"
-	"github.com/Get-Blu/blu-code/internal/tui/theme"
-	"github.com/Get-Blu/blu-code/internal/tui/util"
+	"github.com/loophole-ai/loophole-cli/internal/tui/layout"
+	"github.com/loophole-ai/loophole-cli/internal/tui/styles"
+	"github.com/loophole-ai/loophole-cli/internal/tui/theme"
+	"github.com/loophole-ai/loophole-cli/internal/tui/util"
 )
 
 type DocsDialogCmp interface {
@@ -41,7 +41,7 @@ func (d *docsDialogCmp) View() string {
 	// Initial render of content to determine max width
 	header := styles.Bold().Foreground(t.Primary()).Render("Documentation")
 	repoLabel := "GitHub Repository:"
-	repoLink := styles.Regular().Foreground(t.MarkdownLink()).Render("https://github.com/Get-Blu/blu-code")
+	repoLink := styles.Regular().Foreground(t.MarkdownLink()).Render("https://github.com/loophole-ai/loophole-cli")
 	localLabel := "Local Documentation Folder:"
 	localLink := styles.Regular().Foreground(t.MarkdownLink()).Render("./docs/")
 	filesLabel := "Key Documentation Files:"

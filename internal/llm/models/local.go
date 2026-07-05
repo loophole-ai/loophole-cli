@@ -10,7 +10,7 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/Get-Blu/blu-code/internal/logging"
+	"github.com/loophole-ai/loophole-cli/internal/logging"
 	"github.com/spf13/viper"
 )
 

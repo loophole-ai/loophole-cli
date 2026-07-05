@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Get-Blu/blu-code/internal/config"
-	"github.com/Get-Blu/blu-code/internal/llm/models"
+	"github.com/loophole-ai/loophole-cli/internal/config"
+	"github.com/loophole-ai/loophole-cli/internal/llm/models"
 )
 
 // JSONSchemaType represents a JSON Schema type
@@ -38,8 +38,8 @@ func main() {
 func generateSchema() map[string]any {
 	schema := map[string]any{
 		"$schema":     "http://json-schema.org/draft-07/schema#",
-		"title":       "Blu Configuration",
-		"description": "Configuration schema for the Blu application",
+		"title":       "Loophole Configuration",
+		"description": "Configuration schema for the Loophole application",
 		"type":        "object",
 		"properties":  map[string]any{},
 	}
@@ -52,7 +52,7 @@ func generateSchema() map[string]any {
 			"directory": map[string]any{
 				"type":        "string",
 				"description": "Directory where application data is stored",
-				"default":     ".blu",
+				"default":     ".loophole",
 			},
 		},
 		"required": []string{"directory"},
@@ -89,12 +89,12 @@ func generateSchema() map[string]any {
 			".cursor/rules/",
 			"CLAUDE.md",
 			"CLAUDE.local.md",
-			"blu.md",
-			"blu.local.md",
-			"Blu.md",
-			"Blu.local.md",
-			"BLU.md",
-			"BLU.local.md",
+			"loophole.md",
+			"loophole.local.md",
+			"Loophole.md",
+			"Loophole.local.md",
+			"LOOPHOLE.md",
+			"LOOPHOLE.local.md",
 		},
 	}
 
@@ -105,9 +105,9 @@ func generateSchema() map[string]any {
 			"theme": map[string]any{
 				"type":        "string",
 				"description": "TUI theme name",
-				"default":     "blu",
+				"default":     "loophole",
 				"enum": []string{
-					"blu",
+					"loophole",
 					"catppuccin",
 					"dracula",
 					"flexoki",

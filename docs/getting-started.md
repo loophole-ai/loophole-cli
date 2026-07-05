@@ -1,6 +1,6 @@
-# Getting Started with Blu
+# Getting Started with Loophole
 
-This guide will help you install, configure, and start using Blu for the first time.
+This guide will help you install, configure, and start using Loophole for the first time.
 
 ## Prerequisites
 
@@ -15,7 +15,7 @@ This guide will help you install, configure, and start using Blu for the first t
 This is the recommended method for most users.
 
 ```bash
-npm install -g @get-blu/blu-code
+npm install -g @loophole-ai/loophole-cli
 ```
 
 ### Via Raw Script
@@ -23,7 +23,7 @@ npm install -g @get-blu/blu-code
 For environments without npm:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Get-Blu/blu-code/main/install | bash
+curl -fsSL https://raw.githubusercontent.com/loophole-ai/loophole-cli/main/install | bash
 ```
 
 ## First Run
@@ -35,16 +35,16 @@ curl -fsSL https://raw.githubusercontent.com/Get-Blu/blu-code/main/install | bas
    ```
 3. Launch the application:
    ```bash
-   blu
+   loophole
    ```
 
 ## Initial Setup
 
-When you first launch Blu, it will look for a `.blu.json` configuration file in your home directory or the current working directory. If none is found, it will use default settings. It is recommended to create a configuration file to specify your preferred models and settings.
+When you first launch Loophole, it will look for a `.loophole.json` configuration file in your home directory or the current working directory. If none is found, it will use default settings. It is recommended to create a configuration file to specify your preferred models and settings.
 
 ### Interactive Commands
 
-Blu supports slash commands for quick actions:
+Loophole supports slash commands for quick actions:
 - `/help` - Show all commands and keybindings
 - `/new` - Start a fresh conversation session
 - `/sessions` - Open the session switcher
@@ -53,9 +53,9 @@ Blu supports slash commands for quick actions:
 
 ### Custom Commands
 
-You can create your own commands by adding Markdown files to the `.blu/commands/` directory in your project root. These files will be parsed, and you can use them via `/your-command-name`.
+You can create your own commands by adding Markdown files to the `.loophole/commands/` directory in your project root. These files will be parsed, and you can use them via `/your-command-name`.
 
-Example `.blu/commands/test.md`:
+Example `.loophole/commands/test.md`:
 ```markdown
 ---
 description: Run tests for a specific file
@@ -63,4 +63,4 @@ description: Run tests for a specific file
 I need you to run tests for $FILENAME and report the results.
 ```
 
-When you type `/test`, Blu will prompt you for the `$FILENAME` argument.
+When you type `/test`, Loophole will prompt you for the `$FILENAME` argument.

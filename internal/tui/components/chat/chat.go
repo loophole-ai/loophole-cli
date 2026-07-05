@@ -6,12 +6,12 @@ import (
 
 	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/x/ansi"
-	"github.com/Get-Blu/blu-code/internal/config"
-	"github.com/Get-Blu/blu-code/internal/message"
-	"github.com/Get-Blu/blu-code/internal/session"
-	"github.com/Get-Blu/blu-code/internal/tui/styles"
-	"github.com/Get-Blu/blu-code/internal/tui/theme"
-	"github.com/Get-Blu/blu-code/internal/version"
+	"github.com/loophole-ai/loophole-cli/internal/config"
+	"github.com/loophole-ai/loophole-cli/internal/message"
+	"github.com/loophole-ai/loophole-cli/internal/session"
+	"github.com/loophole-ai/loophole-cli/internal/tui/styles"
+	"github.com/loophole-ai/loophole-cli/internal/tui/theme"
+	"github.com/loophole-ai/loophole-cli/internal/version"
 )
 
 type SendMsg struct {
@@ -98,7 +98,7 @@ func lspsConfigured(width int) string {
 }
 
 func logo(width int) string {
-	logo := fmt.Sprintf("%s %s", styles.BluIcon, "Blu")
+	logo := fmt.Sprintf("%s %s", styles.LoopholeIcon, "Loophole")
 	t := theme.CurrentTheme()
 	baseStyle := styles.BaseStyle()
 
@@ -120,7 +120,7 @@ func logo(width int) string {
 }
 
 func repo(width int) string {
-	repo := "https://github.com/Get-Blu/blu-code"
+	repo := "https://github.com/loophole-ai/loophole-cli"
 	t := theme.CurrentTheme()
 
 	return styles.BaseStyle().

@@ -7,8 +7,8 @@ import (
 	"sync"
 
 	"github.com/google/uuid"
-	"github.com/Get-Blu/blu-code/internal/config"
-	"github.com/Get-Blu/blu-code/internal/pubsub"
+	"github.com/loophole-ai/loophole-cli/internal/config"
+	"github.com/loophole-ai/loophole-cli/internal/pubsub"
 )
 
 var ErrorPermissionDenied = errors.New("permission denied")

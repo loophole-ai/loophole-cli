@@ -7,9 +7,9 @@ import (
 	"path/filepath"
 
 	"github.com/lithammer/fuzzysearch/fuzzy"
-	"github.com/Get-Blu/blu-code/internal/fileutil"
-	"github.com/Get-Blu/blu-code/internal/logging"
-	"github.com/Get-Blu/blu-code/internal/tui/components/dialog"
+	"github.com/loophole-ai/loophole-cli/internal/fileutil"
+	"github.com/loophole-ai/loophole-cli/internal/logging"
+	"github.com/loophole-ai/loophole-cli/internal/tui/components/dialog"
 )
 
 type filesAndFoldersContextGroup struct {

@@ -1,6 +1,6 @@
 # Architecture Overview
 
-Blu is written in Go and leverages several powerful libraries to provide a responsive and reliable terminal experience.
+Loophole is written in Go and leverages several powerful libraries to provide a responsive and reliable terminal experience.
 
 ## Components
 
@@ -19,7 +19,7 @@ Blu is written in Go and leverages several powerful libraries to provide a respo
 1. **Input**: User types a message in the TUI.
 2. **Processing**: The message is sent to the configured `llm` provider.
 3. **Reasoning**: The AI decides to use a tool.
-4. **Execution**: Blu executes the tool locally (e.g., reads a file) and sends the result back to the AI.
+4. **Execution**: Loophole executes the tool locally (e.g., reads a file) and sends the result back to the AI.
 5. **Modification**: If the AI proposes a code change, the TUI displays a diff.
 6. **Commit**: Upon user approval, the changes are written to the disk using the `fileutil` and `diff` packages.
 

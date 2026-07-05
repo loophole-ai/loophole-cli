@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
-APP_NAME="blu-code"
-APP_EXEC="blu"
+APP_NAME="loophole-cli"
+APP_EXEC="loophole"
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -33,15 +33,15 @@ if [[ "$os" == "windows" ]]; then
     filename="${filename}.exe"
 fi
 
-INSTALL_DIR=$HOME/.blu/bin
+INSTALL_DIR=$HOME/.loophole/bin
 mkdir -p "$INSTALL_DIR"
 
 if [ -z "$requested_version" ]; then
-    latest_release_json=$(curl -s https://api.github.com/repos/Get-Blu/blu-code/releases/latest)
+    latest_release_json=$(curl -s https://api.github.com/repos/loophole-ai/loophole-cli/releases/latest)
     specific_version=$(echo "$latest_release_json" | grep -oP '"tag_name": "\K[^"]+' | sed 's/^v//')
-    url="https://github.com/Get-Blu/blu-code/releases/latest/download/$filename"
+    url="https://github.com/loophole-ai/loophole-cli/releases/latest/download/$filename"
 else
-    url="https://github.com/Get-Blu/blu-code/releases/download/v${requested_version}/$filename"
+    url="https://github.com/loophole-ai/loophole-cli/releases/download/v${requested_version}/$filename"
     specific_version=$requested_version
 fi
 
@@ -61,12 +61,12 @@ print_message() {
 }
 
 check_version() {
-    if command -v blu >/dev/null 2>&1; then
-        blu_path=$(which blu)
+    if command -v loophole >/dev/null 2>&1; then
+        loophole_path=$(which loophole)
 
 
         ## TODO: check if version is installed
-        # installed_version=$(blu version)
+        # installed_version=$(loophole version)
         installed_version="0.0.1"
         installed_version=$(echo $installed_version | awk '{print $2}')
 
@@ -81,7 +81,7 @@ check_version() {
 
 download_and_install() {
     print_message info "Downloading ${ORANGE}${APP_EXEC} ${GREEN}version: ${YELLOW}$specific_version ${GREEN}..."
-    mkdir -p blutmp && cd blutmp
+    mkdir -p loopholetmp && cd loopholetmp
     curl -# -L -O $url
     
     # If it's a binary with .exe, rename it correctly
@@ -92,7 +92,7 @@ download_and_install() {
         mv "${filename}.exe" "$INSTALL_DIR/${APP_EXEC}.exe"
     fi
     
-    cd .. && rm -rf blutmp 
+    cd .. && rm -rf loopholetmp 
 }
 
 check_version
@@ -104,9 +104,9 @@ add_to_path() {
     local command=$2
 
     if [[ -w $config_file ]]; then
-        echo -e "\n# blu" >> "$config_file"
+        echo -e "\n# loophole" >> "$config_file"
         echo "$command" >> "$config_file"
-        print_message info "Successfully added ${ORANGE}blu ${GREEN}to \$PATH in $config_file"
+        print_message info "Successfully added ${ORANGE}loophole ${GREEN}to \$PATH in $config_file"
     else
         print_message warning "Manually add the directory to $config_file (or similar):"
         print_message info "  $command"

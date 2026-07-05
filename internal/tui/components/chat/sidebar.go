@@ -8,13 +8,13 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/Get-Blu/blu-code/internal/config"
-	"github.com/Get-Blu/blu-code/internal/diff"
-	"github.com/Get-Blu/blu-code/internal/history"
-	"github.com/Get-Blu/blu-code/internal/pubsub"
-	"github.com/Get-Blu/blu-code/internal/session"
-	"github.com/Get-Blu/blu-code/internal/tui/styles"
-	"github.com/Get-Blu/blu-code/internal/tui/theme"
+	"github.com/loophole-ai/loophole-cli/internal/config"
+	"github.com/loophole-ai/loophole-cli/internal/diff"
+	"github.com/loophole-ai/loophole-cli/internal/history"
+	"github.com/loophole-ai/loophole-cli/internal/pubsub"
+	"github.com/loophole-ai/loophole-cli/internal/session"
+	"github.com/loophole-ai/loophole-cli/internal/tui/styles"
+	"github.com/loophole-ai/loophole-cli/internal/tui/theme"
 )
 
 type sidebarCmp struct {

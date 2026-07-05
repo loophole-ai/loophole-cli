@@ -7,9 +7,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Get-Blu/blu-code/internal/config"
-	"github.com/Get-Blu/blu-code/internal/llm/tools/shell"
-	"github.com/Get-Blu/blu-code/internal/permission"
+	"github.com/loophole-ai/loophole-cli/internal/config"
+	"github.com/loophole-ai/loophole-cli/internal/llm/tools/shell"
+	"github.com/loophole-ai/loophole-cli/internal/permission"
 )
 
 type BashParams struct {
@@ -122,16 +122,16 @@ When the user asks you to create a new git commit, follow these steps carefully:
 </commit_analysis>
 
 4. Create the commit with a message ending with:
-🤖 Generated with blu
-Co-Authored-By: blu <noreply@blu.ai>
+🤖 Generated with loophole
+Co-Authored-By: loophole <noreply@loophole.ai>
 
 - In order to ensure good formatting, ALWAYS pass the commit message via a HEREDOC, a la this example:
 <example>
 git commit -m "$(cat <<'EOF'
  Commit message here.
 
- 🤖 Generated with blu
- Co-Authored-By: blu <noreply@blu.ai>
+ 🤖 Generated with loophole
+ Co-Authored-By: loophole <noreply@loophole.ai>
  EOF
  )"
 </example>
@@ -193,7 +193,7 @@ gh pr create --title "the pr title" --body "$(cat <<'EOF'
 ## Test plan
 [Checklist of TODOs for testing the pull request...]
 
-🤖 Generated with blu
+🤖 Generated with loophole
 EOF
 )"
 </example>

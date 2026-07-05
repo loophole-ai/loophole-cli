@@ -4,7 +4,7 @@ package lsp
 import (
 	"context"
 
-	"github.com/Get-Blu/blu-code/internal/lsp/protocol"
+	"github.com/loophole-ai/loophole-cli/internal/lsp/protocol"
 )
 
 // Implementation sends a textDocument/implementation request to the LSP server.

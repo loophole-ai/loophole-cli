@@ -9,42 +9,42 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	zone "github.com/lrstanley/bubblezone"
-	"github.com/Get-Blu/blu-code/internal/app"
-	"github.com/Get-Blu/blu-code/internal/config"
-	"github.com/Get-Blu/blu-code/internal/db"
-	"github.com/Get-Blu/blu-code/internal/format"
-	"github.com/Get-Blu/blu-code/internal/llm/agent"
-	"github.com/Get-Blu/blu-code/internal/logging"
-	"github.com/Get-Blu/blu-code/internal/pubsub"
-	"github.com/Get-Blu/blu-code/internal/tui"
-	"github.com/Get-Blu/blu-code/internal/version"
+	"github.com/loophole-ai/loophole-cli/internal/app"
+	"github.com/loophole-ai/loophole-cli/internal/config"
+	"github.com/loophole-ai/loophole-cli/internal/db"
+	"github.com/loophole-ai/loophole-cli/internal/format"
+	"github.com/loophole-ai/loophole-cli/internal/llm/agent"
+	"github.com/loophole-ai/loophole-cli/internal/logging"
+	"github.com/loophole-ai/loophole-cli/internal/pubsub"
+	"github.com/loophole-ai/loophole-cli/internal/tui"
+	"github.com/loophole-ai/loophole-cli/internal/version"
 	"github.com/spf13/cobra"
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "blu",
+	Use:   "loophole",
 	Short: "Terminal-based AI assistant for software development",
-	Long: `Blu is a powerful terminal-based AI assistant that helps with software development tasks.
+	Long: `Loophole is a powerful terminal-based AI assistant that helps with software development tasks.
 It provides an interactive chat interface with AI capabilities, code analysis, and LSP integration
 to assist developers in writing, debugging, and understanding code directly from the terminal.`,
 	Example: `
   # Run in interactive mode
-  blu
+  loophole
 
   # Run with debug logging
-  blu -d
+  loophole -d
 
   # Run with debug logging in a specific directory
-  blu -d -c /path/to/project
+  loophole -d -c /path/to/project
 
   # Print version
-  blu -v
+  loophole -v
 
   # Run a single non-interactive prompt
-  blu -p "Explain the use of context in Go"
+  loophole -p "Explain the use of context in Go"
 
   # Run a single non-interactive prompt with JSON output format
-  blu -p "Explain the use of context in Go" -f json
+  loophole -p "Explain the use of context in Go" -f json
   `,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		// If the help flag is set, show the help message

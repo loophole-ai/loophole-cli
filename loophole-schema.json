@@ -110,7 +110,7 @@
       "type": "object"
     }
   },
-  "description": "Configuration schema for the Blu application",
+  "description": "Configuration schema for the Loophole application",
   "properties": {
     "agents": {
       "additionalProperties": {
@@ -242,12 +242,12 @@
         ".cursor/rules/",
         "CLAUDE.md",
         "CLAUDE.local.md",
-        "blu.md",
-        "blu.local.md",
-        "Blu.md",
-        "Blu.local.md",
-        "BLU.md",
-        "BLU.local.md"
+        "loophole.md",
+        "loophole.local.md",
+        "Loophole.md",
+        "Loophole.local.md",
+        "LOOPHOLE.md",
+        "LOOPHOLE.local.md"
       ],
       "description": "Context paths for the application",
       "items": {
@@ -259,7 +259,7 @@
       "description": "Storage configuration",
       "properties": {
         "directory": {
-          "default": ".blu",
+          "default": ".loophole",
           "description": "Directory where application data is stored",
           "type": "string"
         }
@@ -400,10 +400,10 @@
       "description": "Terminal User Interface configuration",
       "properties": {
         "theme": {
-          "default": "blu",
+          "default": "loophole",
           "description": "TUI theme name",
           "enum": [
-            "blu",
+            "loophole",
             "catppuccin",
             "dracula",
             "flexoki",
@@ -423,6 +423,6 @@
       "type": "string"
     }
   },
-  "title": "Blu Configuration",
+  "title": "Loophole Configuration",
   "type": "object"
 }

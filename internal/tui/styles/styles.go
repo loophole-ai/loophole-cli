@@ -2,7 +2,7 @@ package styles
 
 import (
 	"github.com/charmbracelet/lipgloss"
-	"github.com/Get-Blu/blu-code/internal/tui/theme"
+	"github.com/loophole-ai/loophole-cli/internal/tui/theme"
 )
 
 var (

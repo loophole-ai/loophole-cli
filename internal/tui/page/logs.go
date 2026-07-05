@@ -4,9 +4,9 @@ import (
 	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/Get-Blu/blu-code/internal/tui/components/logs"
-	"github.com/Get-Blu/blu-code/internal/tui/layout"
-	"github.com/Get-Blu/blu-code/internal/tui/styles"
+	"github.com/loophole-ai/loophole-cli/internal/tui/components/logs"
+	"github.com/loophole-ai/loophole-cli/internal/tui/layout"
+	"github.com/loophole-ai/loophole-cli/internal/tui/styles"
 )
 
 var LogsPage PageID = "logs"

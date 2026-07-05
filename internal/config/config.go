@@ -10,8 +10,8 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/Get-Blu/blu-code/internal/llm/models"
-	"github.com/Get-Blu/blu-code/internal/logging"
+	"github.com/loophole-ai/loophole-cli/internal/llm/models"
+	"github.com/loophole-ai/loophole-cli/internal/logging"
 	"github.com/spf13/viper"
 )
 
@@ -98,9 +98,9 @@ type Config struct {
 
 // Application constants
 const (
-	defaultDataDirectory = ".blu"
+	defaultDataDirectory = ".loophole"
 	defaultLogLevel      = "info"
-	appName              = "blu"
+	appName              = "loophole"
 
 	MaxTokensFallbackDefault = 4096
 )
@@ -111,12 +111,12 @@ var defaultContextPaths = []string{
 	".cursor/rules/",
 	"CLAUDE.md",
 	"CLAUDE.local.md",
-	"blu.md",
-	"blu.local.md",
-	"Blu.md",
-	"Blu.local.md",
-	"BLU.md",
-	"BLU.local.md",
+	"loophole.md",
+	"loophole.local.md",
+	"Loophole.md",
+	"Loophole.local.md",
+	"LOOPHOLE.md",
+	"LOOPHOLE.local.md",
 }
 
 // Global configuration instance
@@ -160,7 +160,7 @@ func Load(workingDir string, debug bool) (*Config, error) {
 	if cfg.Debug {
 		defaultLevel = slog.LevelDebug
 	}
-	if os.Getenv("BLU_DEV_DEBUG") == "true" {
+	if os.Getenv("LOOPHOLE_DEV_DEBUG") == "true" {
 		loggingFile := fmt.Sprintf("%s/%s", cfg.Data.Directory, "debug.log")
 		messagesPath := fmt.Sprintf("%s/%s", cfg.Data.Directory, "messages")
 
@@ -230,7 +230,7 @@ func configureViper() {
 func setDefaults(debug bool) {
 	viper.SetDefault("data.directory", defaultDataDirectory)
 	viper.SetDefault("contextPaths", defaultContextPaths)
-	viper.SetDefault("tui.theme", "blu")
+	viper.SetDefault("tui.theme", "loophole")
 	viper.SetDefault("autoCompact", true)
 
 	// Set default shell from environment or fallback to /bin/bash

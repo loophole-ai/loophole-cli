@@ -8,8 +8,8 @@ cmd/
 
 # Build artifacts
 dist/
-bin/blu
-bin/blu.exe
+bin/loophole
+bin/loophole.exe
 
 # Dev / project config
 .goreleaser.yml
@@ -23,6 +23,6 @@ scripts/script
 install
 install.ps1
 sqlc.yaml
-blu-schema.json
-.blu/
-.blu.json
+loophole-schema.json
+.loophole/
+.loophole.json

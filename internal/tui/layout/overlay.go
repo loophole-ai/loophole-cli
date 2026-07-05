@@ -8,9 +8,9 @@ import (
 	"github.com/muesli/ansi"
 	"github.com/muesli/reflow/truncate"
 	"github.com/muesli/termenv"
-	"github.com/Get-Blu/blu-code/internal/tui/styles"
-	"github.com/Get-Blu/blu-code/internal/tui/theme"
-	"github.com/Get-Blu/blu-code/internal/tui/util"
+	"github.com/loophole-ai/loophole-cli/internal/tui/styles"
+	"github.com/loophole-ai/loophole-cli/internal/tui/theme"
+	"github.com/loophole-ai/loophole-cli/internal/tui/util"
 )
 
 // Most of this code is borrowed from

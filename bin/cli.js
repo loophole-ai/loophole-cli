@@ -6,15 +6,15 @@ const path = require('path');
 const fs = require('fs');
 
 const isWindows = process.platform === 'win32';
-const binaryName = isWindows ? 'blu.exe' : 'blu';
+const binaryName = isWindows ? 'loophole.exe' : 'loophole';
 const binaryPath = path.join(__dirname, binaryName);
 
 // Check if the binary was downloaded by the postinstall script
 if (!fs.existsSync(binaryPath)) {
     console.error(
-        '\n Blu binary not found at: ' + binaryPath + '\n' +
-        '   Try reinstalling: npm install -g @get-blu/blu-code\n' +
-        '   Or download manually: https://github.com/Get-Blu/blu-code/releases\n'
+        '\n Loophole binary not found at: ' + binaryPath + '\n' +
+        '   Try reinstalling: npm install -g @loophole-ai/loophole-cli\n' +
+        '   Or download manually: https://github.com/loophole-ai/loophole-cli/releases\n'
     );
     process.exit(1);
 }
@@ -39,7 +39,7 @@ child.on('error', (err) => {
             console.error(`    Could not fix automatically. Run: chmod +x ${binaryPath}\n`);
         }
     } else {
-        console.error(`\n Failed to launch Blu: ${err.message}\n`);
+        console.error(`\n Failed to launch Loophole: ${err.message}\n`);
     }
     process.exit(1);
 });

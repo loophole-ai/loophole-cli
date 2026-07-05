@@ -7,16 +7,16 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/Get-Blu/blu-code/internal/config"
-	"github.com/Get-Blu/blu-code/internal/llm/models"
-	"github.com/Get-Blu/blu-code/internal/lsp"
-	"github.com/Get-Blu/blu-code/internal/lsp/protocol"
-	"github.com/Get-Blu/blu-code/internal/pubsub"
-	"github.com/Get-Blu/blu-code/internal/session"
-	"github.com/Get-Blu/blu-code/internal/tui/components/chat"
-	"github.com/Get-Blu/blu-code/internal/tui/styles"
-	"github.com/Get-Blu/blu-code/internal/tui/theme"
-	"github.com/Get-Blu/blu-code/internal/tui/util"
+	"github.com/loophole-ai/loophole-cli/internal/config"
+	"github.com/loophole-ai/loophole-cli/internal/llm/models"
+	"github.com/loophole-ai/loophole-cli/internal/lsp"
+	"github.com/loophole-ai/loophole-cli/internal/lsp/protocol"
+	"github.com/loophole-ai/loophole-cli/internal/pubsub"
+	"github.com/loophole-ai/loophole-cli/internal/session"
+	"github.com/loophole-ai/loophole-cli/internal/tui/components/chat"
+	"github.com/loophole-ai/loophole-cli/internal/tui/styles"
+	"github.com/loophole-ai/loophole-cli/internal/tui/theme"
+	"github.com/loophole-ai/loophole-cli/internal/tui/util"
 )
 
 type StatusCmp interface {

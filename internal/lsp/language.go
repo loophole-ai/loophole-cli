@@ -4,7 +4,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/Get-Blu/blu-code/internal/lsp/protocol"
+	"github.com/loophole-ai/loophole-cli/internal/lsp/protocol"
 )
 
 func DetectLanguageID(uri string) protocol.LanguageKind {

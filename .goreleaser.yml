@@ -1,8 +1,8 @@
 version: 2
-project_name: blu
+project_name: loophole
 
 builds:
-  - id: blu
+  - id: loophole
     env:
       - CGO_ENABLED=0
     goos:
@@ -13,14 +13,14 @@ builds:
       - amd64
       - arm64
     ldflags:
-      - -s -w -X github.com/Get-Blu/blu-code/internal/version.Version={{.Version}}
+      - -s -w -X github.com/loophole-ai/loophole-cli/internal/version.Version={{.Version}}
     main: ./main.go
-    binary: blu
+    binary: loophole
 
 archives:
   - id: default
     builds:
-      - blu
+      - loophole
     formats:
       - tar.gz
     name_template: >-
@@ -39,7 +39,7 @@ archives:
 
   - id: binary
     builds:
-      - blu
+      - loophole
     formats:
       - binary
     name_template: >-
@@ -60,17 +60,17 @@ snapshot:
 # Correct GoReleaser v2 syntax for overwriting existing releases
 release:
   github:
-    owner: Get-Blu
-    name: blu-code
+    owner: loophole-ai
+    name: loophole-cli
   mode: replace
   make_latest: true
 
 nfpms:
   - builds:
-      - blu
+      - loophole
     maintainer: Garv Agnihotri <garvagnihotri22@gmail.com>
     description: Terminal-based AI assistant for software development
-    homepage: "https://github.com/Get-Blu/blu-code"
+    homepage: "https://github.com/loophole-ai/loophole-cli"
     license: MIT
     formats:
       - deb

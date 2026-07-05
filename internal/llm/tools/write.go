@@ -9,12 +9,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Get-Blu/blu-code/internal/config"
-	"github.com/Get-Blu/blu-code/internal/diff"
-	"github.com/Get-Blu/blu-code/internal/history"
-	"github.com/Get-Blu/blu-code/internal/logging"
-	"github.com/Get-Blu/blu-code/internal/lsp"
-	"github.com/Get-Blu/blu-code/internal/permission"
+	"github.com/loophole-ai/loophole-cli/internal/config"
+	"github.com/loophole-ai/loophole-cli/internal/diff"
+	"github.com/loophole-ai/loophole-cli/internal/history"
+	"github.com/loophole-ai/loophole-cli/internal/logging"
+	"github.com/loophole-ai/loophole-cli/internal/lsp"
+	"github.com/loophole-ai/loophole-cli/internal/permission"
 )
 
 type WriteParams struct {

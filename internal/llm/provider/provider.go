@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Get-Blu/blu-code/internal/llm/models"
-	"github.com/Get-Blu/blu-code/internal/llm/tools"
-	"github.com/Get-Blu/blu-code/internal/message"
+	"github.com/loophole-ai/loophole-cli/internal/llm/models"
+	"github.com/loophole-ai/loophole-cli/internal/llm/tools"
+	"github.com/loophole-ai/loophole-cli/internal/message"
 )
 
 type EventType string
@@ -152,8 +152,8 @@ func NewProvider(providerName models.ModelProvider, opts ...ProviderClientOption
 		clientOptions.openaiOptions = append(clientOptions.openaiOptions,
 			WithOpenAIBaseURL("https://openrouter.ai/api/v1"),
 			WithOpenAIExtraHeaders(map[string]string{
-				"HTTP-Referer": "https://github.com/Get-Blu/blu-code",
-				"X-Title":      "Blu",
+				"HTTP-Referer": "https://github.com/loophole-ai/loophole-cli",
+				"X-Title":      "Loophole",
 			}),
 		)
 		return &baseProvider[OpenAIClient]{

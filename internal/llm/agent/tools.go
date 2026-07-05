@@ -3,12 +3,12 @@ package agent
 import (
 	"context"
 
-	"github.com/Get-Blu/blu-code/internal/history"
-	"github.com/Get-Blu/blu-code/internal/llm/tools"
-	"github.com/Get-Blu/blu-code/internal/lsp"
-	"github.com/Get-Blu/blu-code/internal/message"
-	"github.com/Get-Blu/blu-code/internal/permission"
-	"github.com/Get-Blu/blu-code/internal/session"
+	"github.com/loophole-ai/loophole-cli/internal/history"
+	"github.com/loophole-ai/loophole-cli/internal/llm/tools"
+	"github.com/loophole-ai/loophole-cli/internal/lsp"
+	"github.com/loophole-ai/loophole-cli/internal/message"
+	"github.com/loophole-ai/loophole-cli/internal/permission"
+	"github.com/loophole-ai/loophole-cli/internal/session"
 )
 
 func CoderAgentTools(

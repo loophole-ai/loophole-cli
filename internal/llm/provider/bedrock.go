@@ -7,8 +7,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/Get-Blu/blu-code/internal/llm/tools"
-	"github.com/Get-Blu/blu-code/internal/message"
+	"github.com/loophole-ai/loophole-cli/internal/llm/tools"
+	"github.com/loophole-ai/loophole-cli/internal/message"
 )
 
 type bedrockOptions struct {

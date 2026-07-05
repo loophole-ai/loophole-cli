@@ -8,16 +8,16 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Get-Blu/blu-code/internal/config"
-	"github.com/Get-Blu/blu-code/internal/llm/models"
-	"github.com/Get-Blu/blu-code/internal/llm/prompt"
-	"github.com/Get-Blu/blu-code/internal/llm/provider"
-	"github.com/Get-Blu/blu-code/internal/llm/tools"
-	"github.com/Get-Blu/blu-code/internal/logging"
-	"github.com/Get-Blu/blu-code/internal/message"
-	"github.com/Get-Blu/blu-code/internal/permission"
-	"github.com/Get-Blu/blu-code/internal/pubsub"
-	"github.com/Get-Blu/blu-code/internal/session"
+	"github.com/loophole-ai/loophole-cli/internal/config"
+	"github.com/loophole-ai/loophole-cli/internal/llm/models"
+	"github.com/loophole-ai/loophole-cli/internal/llm/prompt"
+	"github.com/loophole-ai/loophole-cli/internal/llm/provider"
+	"github.com/loophole-ai/loophole-cli/internal/llm/tools"
+	"github.com/loophole-ai/loophole-cli/internal/logging"
+	"github.com/loophole-ai/loophole-cli/internal/message"
+	"github.com/loophole-ai/loophole-cli/internal/permission"
+	"github.com/loophole-ai/loophole-cli/internal/pubsub"
+	"github.com/loophole-ai/loophole-cli/internal/session"
 )
 
 // Common errors

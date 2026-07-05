@@ -14,8 +14,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Get-Blu/blu-code/internal/config"
-	"github.com/Get-Blu/blu-code/internal/fileutil"
+	"github.com/loophole-ai/loophole-cli/internal/config"
+	"github.com/loophole-ai/loophole-cli/internal/fileutil"
 )
 
 type GrepParams struct {

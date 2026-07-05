@@ -7,9 +7,9 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/Get-Blu/blu-code/internal/config"
-	"github.com/Get-Blu/blu-code/internal/llm/models"
-	"github.com/Get-Blu/blu-code/internal/logging"
+	"github.com/loophole-ai/loophole-cli/internal/config"
+	"github.com/loophole-ai/loophole-cli/internal/llm/models"
+	"github.com/loophole-ai/loophole-cli/internal/logging"
 )
 
 func GetAgentPrompt(agentName config.AgentName, provider models.ModelProvider) string {

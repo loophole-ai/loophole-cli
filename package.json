@@ -1,5 +1,5 @@
 {
-  "name": "@get-blu/blu-code",
+  "name": "@loophole-ai/loophole-cli",
   "version": "1.0.0",
   "description": "Terminal-based AI assistant for software development",
   "keywords": [
@@ -10,21 +10,21 @@
     "terminal",
     "llm"
   ],
-  "homepage": "https://github.com/Get-Blu/blu-code",
+  "homepage": "https://github.com/loophole-ai/loophole-cli",
   "bugs": {
-    "url": "https://github.com/Get-Blu/blu-code/issues"
+    "url": "https://github.com/loophole-ai/loophole-cli/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Get-Blu/blu-code.git"
+    "url": "git+https://github.com/loophole-ai/loophole-cli.git"
   },
   "bin": {
-    "blu": "./bin/cli.js"
+    "loophole": "./bin/cli.js"
   },
   "scripts": {
     "postinstall": "node scripts/install-npm.js"
   },
-  "author": "Get-Blu",
+  "author": "loophole-ai",
   "license": "MIT",
   "engines": {
     "node": ">=14.0.0"

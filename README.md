@@ -1,17 +1,17 @@
-# Blu
+# Loophole
 
->Blu is a Go-powered terminal UI that brings AI-assisted coding directly into your command line. It connects to leading models and gives them tools to read, analyze, and modify your codebase from an elegant TUI built with Bubble Tea.
+>Loophole is a Go-powered terminal UI that brings AI-assisted coding directly into your command line. It connects to leading models and gives them tools to read, analyze, and modify your codebase from an elegant TUI built with Bubble Tea.
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Go Version](https://img.shields.io/badge/go-1.21+-00ADD8.svg)](https://go.dev/)
 
 <p align="center">
-  <img src="assets/blu-code-main.png" alt="Blu" width="100%">
+  <img src="assets/loophole-cli-main.png" alt="Loophole" width="100%">
 </p>
 
 ## Overview
 
-Blu is a Go-powered terminal UI that transforms your command line into an intelligent development environment. It connects to leading AI models and provides them with powerful tools to read, analyze, and modify your codebase - all from an elegant TUI built with [Bubble Tea](https://github.com/charmbracelet/bubbletea).
+Loophole is a Go-powered terminal UI that transforms your command line into an intelligent development environment. It connects to leading AI models and provides them with powerful tools to read, analyze, and modify your codebase - all from an elegant TUI built with [Bubble Tea](https://github.com/charmbracelet/bubbletea).
 
 **Key capabilities:**
 - Chat with AI models that can see and edit your files
@@ -27,20 +27,20 @@ Blu is a Go-powered terminal UI that transforms your command line into an intell
 
 **Via npm (recommended):**
 ```bash
-npm install -g @get-blu/blu-code
+npm install -g @loophole-ai/loophole-cli
 ```
 
 **Via raw script:**
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Get-Blu/blu-code/main/install | bash
+curl -fsSL https://raw.githubusercontent.com/loophole-ai/loophole-cli/main/install | bash
 ```
 
 **From source:**
 ```bash
-git clone https://github.com/Get-Blu/blu-code.git
-cd blu-code
-go build -o blu
-blu
+git clone https://github.com/loophole-ai/loophole-cli.git
+cd loophole-cli
+go build -o loophole
+loophole
 ```
 
 ### Setup
@@ -51,7 +51,7 @@ export ANTHROPIC_API_KEY="your-key-here"
 # or OPENAI_API_KEY, GEMINI_API_KEY
 ```
 
-2. Create a `.blu.json` config file (optional):
+2. Create a `.loophole.json` config file (optional):
 ```json
 {
   "agents": {
@@ -64,9 +64,9 @@ export ANTHROPIC_API_KEY="your-key-here"
 }
 ```
 
-3. Launch Blu:
+3. Launch Loophole:
 ```bash
-blu
+loophole
 ```
 
 ## Features
@@ -97,8 +97,8 @@ Switch between Claude, GPT, Gemini, or any OpenAI-compatible endpoint. Use diffe
 
 ### Basic Workflow
 
-1. **Start a conversation**: Launch `blu` and ask a question
-2. **Let AI explore**: Blu can read files, search your codebase, and understand context
+1. **Start a conversation**: Launch `loophole` and ask a question
+2. **Let AI explore**: Loophole can read files, search your codebase, and understand context
 3. **Review changes**: See proposed file modifications in the sidebar
 4. **Apply or reject**: Accept changes you want, skip the rest
 
@@ -204,7 +204,7 @@ Comprehensive documentation is available in the `docs/` directory:
 
 ## Configuration
 
-Place `.blu.json` in your home directory (`~/.blu.json`) or project root:
+Place `.loophole.json` in your home directory (`~/.loophole.json`) or project root:
 
 ```json
 {
@@ -257,18 +257,18 @@ Place `.blu.json` in your home directory (`~/.blu.json`) or project root:
 | `ANTHROPIC_API_KEY` | Claude API access |
 | `OPENAI_API_KEY` | GPT-4 API access |
 | `GEMINI_API_KEY` | Gemini API access |
-| `BLU_DEBUG=true` | Enable debug logging |
-| `BLU_CONFIG=/path/to/.blu.json` | Custom config location |
+| `LOOPHOLE_DEBUG=true` | Enable debug logging |
+| `LOOPHOLE_CONFIG=/path/to/.loophole.json` | Custom config location |
 
 ## Troubleshooting
 
-**Blu won't start**
+**Loophole won't start**
 - Check your API keys are set
 - Verify Go 1.21+ is installed
-- Try `blu --debug` for detailed logs
+- Try `loophole --debug` for detailed logs
 
 **AI can't see my files**
-- Ensure you're running Blu from your project directory
+- Ensure you're running Loophole from your project directory
 - Check file permissions
 - Verify paths in error messages
 
@@ -281,20 +281,20 @@ Place `.blu.json` in your home directory (`~/.blu.json`) or project root:
 
 ```bash
 # Clone the repository
-git clone https://github.com/Get-Blu/blu-code.git
-cd blu-code
+git clone https://github.com/loophole-ai/loophole-cli.git
+cd loophole-cli
 
 # Install dependencies
 go mod download
 
 # Build
-go build -o blu
+go build -o loophole
 
 # Run tests
 go test ./...
 
 # Install globally
-sudo mv blu /usr/local/bin/
+sudo mv loophole /usr/local/bin/
 ```
 
 ## Contributing
@@ -309,7 +309,7 @@ Contributions are welcome! Please feel free to submit issues or pull requests.
 
 ## Credits
 
-Blu builds on the excellent work of many open-source projects:
+Loophole builds on the excellent work of many open-source projects:
 
 - **[Bubble Tea](https://github.com/charmbracelet/bubbletea)** - Excellent TUI framework
 - **[Lip Gloss](https://github.com/charmbracelet/lipgloss)** - Style definitions for TUI
@@ -320,4 +320,7 @@ Blu builds on the excellent work of many open-source projects:
 
 Distributed under the **MIT License**. See `LICENSE` for more information.
 
-**Created by [Garv Agnihotri](https://github.com/Get-Blu)**
+This project is a rebranded fork of the upstream `blu-code` project. See
+[`NOTICE.md`](./NOTICE.md) for attribution details.
+
+**Created by [Garv Agnihotri](https://github.com/loophole-ai)**

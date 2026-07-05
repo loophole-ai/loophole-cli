@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/bmatcuk/doublestar/v4"
-	"github.com/Get-Blu/blu-code/internal/logging"
+	"github.com/loophole-ai/loophole-cli/internal/logging"
 )
 
 var (
@@ -81,7 +81,7 @@ func SkipHidden(path string) bool {
 	}
 
 	commonIgnoredDirs := map[string]bool{
-		".blu":             true,
+		".loophole":             true,
 		"node_modules":     true,
 		"vendor":           true,
 		"dist":             true,

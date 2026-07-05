@@ -1,7 +1,7 @@
 package completions
 
 import (
-	"github.com/Get-Blu/blu-code/internal/tui/components/dialog"
+	"github.com/loophole-ai/loophole-cli/internal/tui/components/dialog"
 )
 
 type completionRouter struct {

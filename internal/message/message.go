@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/Get-Blu/blu-code/internal/db"
-	"github.com/Get-Blu/blu-code/internal/llm/models"
-	"github.com/Get-Blu/blu-code/internal/pubsub"
+	"github.com/loophole-ai/loophole-cli/internal/db"
+	"github.com/loophole-ai/loophole-cli/internal/llm/models"
+	"github.com/loophole-ai/loophole-cli/internal/pubsub"
 )
 
 type CreateMessageParams struct {

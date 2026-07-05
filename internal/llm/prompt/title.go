@@ -1,6 +1,6 @@
 package prompt
 
-import "github.com/Get-Blu/blu-code/internal/llm/models"
+import "github.com/loophole-ai/loophole-cli/internal/llm/models"
 
 func TitlePrompt(_ models.ModelProvider) string {
 	return `you will generate a short title based on the first message a user begins a conversation with

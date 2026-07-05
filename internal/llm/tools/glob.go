@@ -10,9 +10,9 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/Get-Blu/blu-code/internal/config"
-	"github.com/Get-Blu/blu-code/internal/fileutil"
-	"github.com/Get-Blu/blu-code/internal/logging"
+	"github.com/loophole-ai/loophole-cli/internal/config"
+	"github.com/loophole-ai/loophole-cli/internal/fileutil"
+	"github.com/loophole-ai/loophole-cli/internal/logging"
 )
 
 const (

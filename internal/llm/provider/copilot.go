@@ -13,11 +13,11 @@ import (
 	"github.com/openai/openai-go"
 	"github.com/openai/openai-go/option"
 	"github.com/openai/openai-go/shared"
-	"github.com/Get-Blu/blu-code/internal/config"
-	"github.com/Get-Blu/blu-code/internal/llm/models"
-	toolsPkg "github.com/Get-Blu/blu-code/internal/llm/tools"
-	"github.com/Get-Blu/blu-code/internal/logging"
-	"github.com/Get-Blu/blu-code/internal/message"
+	"github.com/loophole-ai/loophole-cli/internal/config"
+	"github.com/loophole-ai/loophole-cli/internal/llm/models"
+	toolsPkg "github.com/loophole-ai/loophole-cli/internal/llm/tools"
+	"github.com/loophole-ai/loophole-cli/internal/logging"
+	"github.com/loophole-ai/loophole-cli/internal/message"
 )
 
 type copilotOptions struct {
@@ -62,7 +62,7 @@ func (c *copilotClient) exchangeGitHubToken(githubToken string) (string, error) 
 	}
 
 	req.Header.Set("Authorization", "Token "+githubToken)
-	req.Header.Set("User-Agent", "Blu/1.0.0")
+	req.Header.Set("User-Agent", "Loophole/1.0.0")
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
@@ -124,7 +124,7 @@ func newCopilotClient(opts providerClientOptions) CopilotClient {
 		}
 
 		if githubToken == "" {
-			logging.Error("GitHub token is required for Copilot provider. Set GITHUB_TOKEN environment variable, configure it in blu.json, or ensure GitHub CLI/Copilot is properly authenticated.")
+			logging.Error("GitHub token is required for Copilot provider. Set GITHUB_TOKEN environment variable, configure it in loophole.json, or ensure GitHub CLI/Copilot is properly authenticated.")
 			return &copilotClient{
 				providerOptions: opts,
 				options:         copilotOpts,
@@ -164,8 +164,8 @@ func newCopilotClient(opts providerClientOptions) CopilotClient {
 
 	// Add GitHub Copilot specific headers
 	openaiClientOptions = append(openaiClientOptions,
-		option.WithHeader("Editor-Version", "Blu/1.0.0"),
-		option.WithHeader("Editor-Plugin-Version", "Blu/1.0.0"),
+		option.WithHeader("Editor-Version", "Loophole/1.0.0"),
+		option.WithHeader("Editor-Plugin-Version", "Loophole/1.0.0"),
 		option.WithHeader("Copilot-Integration-Id", "vscode-chat"),
 	)
 

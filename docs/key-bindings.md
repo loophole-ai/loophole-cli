@@ -1,6 +1,6 @@
 # Key Bindings Reference
 
-Blu is optimized for a keyboard-driven workflow. Below is a list of the primary keyboard shortcuts.
+Loophole is optimized for a keyboard-driven workflow. Below is a list of the primary keyboard shortcuts.
 
 ## Global Navigation
 

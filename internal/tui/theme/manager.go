@@ -7,8 +7,8 @@ import (
 	"sync"
 
 	"github.com/alecthomas/chroma/v2/styles"
-	"github.com/Get-Blu/blu-code/internal/config"
-	"github.com/Get-Blu/blu-code/internal/logging"
+	"github.com/loophole-ai/loophole-cli/internal/config"
+	"github.com/loophole-ai/loophole-cli/internal/logging"
 )
 
 // Manager handles theme registration, selection, and retrieval.
@@ -92,9 +92,9 @@ func AvailableThemes() []string {
 		names = append(names, name)
 	}
 	slices.SortFunc(names, func(a, b string) int {
-		if a == "blu" {
+		if a == "loophole" {
 			return -1
-		} else if b == "blu" {
+		} else if b == "loophole" {
 			return 1
 		}
 		return strings.Compare(a, b)

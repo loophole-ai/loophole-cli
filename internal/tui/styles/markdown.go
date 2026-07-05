@@ -4,7 +4,7 @@ import (
 	"github.com/charmbracelet/glamour"
 	"github.com/charmbracelet/glamour/ansi"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/Get-Blu/blu-code/internal/tui/theme"
+	"github.com/loophole-ai/loophole-cli/internal/tui/theme"
 )
 
 const defaultMargin = 1

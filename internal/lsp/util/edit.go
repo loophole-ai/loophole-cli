@@ -7,7 +7,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/Get-Blu/blu-code/internal/lsp/protocol"
+	"github.com/loophole-ai/loophole-cli/internal/lsp/protocol"
 )
 
 func applyTextEdits(uri protocol.DocumentUri, edits []protocol.TextEdit) error {

@@ -12,11 +12,11 @@ import (
 	"github.com/openai/openai-go"
 	"github.com/openai/openai-go/option"
 	"github.com/openai/openai-go/shared"
-	"github.com/Get-Blu/blu-code/internal/config"
-	"github.com/Get-Blu/blu-code/internal/llm/models"
-	"github.com/Get-Blu/blu-code/internal/llm/tools"
-	"github.com/Get-Blu/blu-code/internal/logging"
-	"github.com/Get-Blu/blu-code/internal/message"
+	"github.com/loophole-ai/loophole-cli/internal/config"
+	"github.com/loophole-ai/loophole-cli/internal/llm/models"
+	"github.com/loophole-ai/loophole-cli/internal/llm/tools"
+	"github.com/loophole-ai/loophole-cli/internal/logging"
+	"github.com/loophole-ai/loophole-cli/internal/message"
 )
 
 type openaiOptions struct {
@@ -53,10 +53,10 @@ func newOpenAIClient(opts providerClientOptions) OpenAIClient {
 			openaiOpts.extraHeaders = make(map[string]string)
 		}
 		if _, ok := openaiOpts.extraHeaders["HTTP-Referer"]; !ok {
-			openaiOpts.extraHeaders["HTTP-Referer"] = "https://github.com/Get-Blu/blu-code"
+			openaiOpts.extraHeaders["HTTP-Referer"] = "https://github.com/loophole-ai/loophole-cli"
 		}
 		if _, ok := openaiOpts.extraHeaders["X-Title"]; !ok {
-			openaiOpts.extraHeaders["X-Title"] = "Blu"
+			openaiOpts.extraHeaders["X-Title"] = "Loophole"
 		}
 	}
 

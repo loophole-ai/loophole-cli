@@ -11,8 +11,8 @@ import (
 
 	md "github.com/JohannesKaufmann/html-to-markdown"
 	"github.com/PuerkitoBio/goquery"
-	"github.com/Get-Blu/blu-code/internal/config"
-	"github.com/Get-Blu/blu-code/internal/permission"
+	"github.com/loophole-ai/loophole-cli/internal/config"
+	"github.com/loophole-ai/loophole-cli/internal/permission"
 )
 
 type FetchParams struct {
@@ -152,7 +152,7 @@ func (t *fetchTool) Run(ctx context.Context, call ToolCall) (ToolResponse, error
 		return ToolResponse{}, fmt.Errorf("failed to create request: %w", err)
 	}
 
-	req.Header.Set("User-Agent", "Blu/1.0.0")
+	req.Header.Set("User-Agent", "Loophole/1.0.0")
 
 	resp, err := client.Do(req)
 	if err != nil {

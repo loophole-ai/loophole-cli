@@ -8,22 +8,22 @@ import (
 	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/Get-Blu/blu-code/internal/app"
-	"github.com/Get-Blu/blu-code/internal/config"
-	"github.com/Get-Blu/blu-code/internal/llm/agent"
-	"github.com/Get-Blu/blu-code/internal/logging"
-	"github.com/Get-Blu/blu-code/internal/permission"
-	"github.com/Get-Blu/blu-code/internal/pubsub"
-	"github.com/Get-Blu/blu-code/internal/session"
-	"github.com/Get-Blu/blu-code/internal/tui/components/chat"
-	"github.com/Get-Blu/blu-code/internal/tui/components/core"
-	"github.com/Get-Blu/blu-code/internal/tui/components/dialog"
-	"github.com/Get-Blu/blu-code/internal/tui/layout"
-	"github.com/Get-Blu/blu-code/internal/tui/page"
-	"github.com/Get-Blu/blu-code/internal/tui/styles"
-	"github.com/Get-Blu/blu-code/internal/tui/theme"
-	"github.com/Get-Blu/blu-code/internal/tui/util"
-	"github.com/Get-Blu/blu-code/internal/version"
+	"github.com/loophole-ai/loophole-cli/internal/app"
+	"github.com/loophole-ai/loophole-cli/internal/config"
+	"github.com/loophole-ai/loophole-cli/internal/llm/agent"
+	"github.com/loophole-ai/loophole-cli/internal/logging"
+	"github.com/loophole-ai/loophole-cli/internal/permission"
+	"github.com/loophole-ai/loophole-cli/internal/pubsub"
+	"github.com/loophole-ai/loophole-cli/internal/session"
+	"github.com/loophole-ai/loophole-cli/internal/tui/components/chat"
+	"github.com/loophole-ai/loophole-cli/internal/tui/components/core"
+	"github.com/loophole-ai/loophole-cli/internal/tui/components/dialog"
+	"github.com/loophole-ai/loophole-cli/internal/tui/layout"
+	"github.com/loophole-ai/loophole-cli/internal/tui/page"
+	"github.com/loophole-ai/loophole-cli/internal/tui/styles"
+	"github.com/loophole-ai/loophole-cli/internal/tui/theme"
+	"github.com/loophole-ai/loophole-cli/internal/tui/util"
+	"github.com/loophole-ai/loophole-cli/internal/version"
 )
 
 type keyMap struct {
@@ -1100,14 +1100,14 @@ func New(app *app.App) tea.Model {
 	model.RegisterCommand(dialog.Command{
 		ID:          "init",
 		Title:       "Initialize Project",
-		Description: "Create/Update the Blu.md memory file",
+		Description: "Create/Update the Loophole.md memory file",
 		Handler: func(cmd dialog.Command) tea.Cmd {
-			prompt := `Please analyze this codebase and create a Blu.md file containing:
+			prompt := `Please analyze this codebase and create a Loophole.md file containing:
 1. Build/lint/test commands - especially for running a single test
 2. Code style guidelines including imports, formatting, types, naming conventions, error handling, etc.
 
 The file you create will be given to agentic coding agents (such as yourself) that operate in this repository. Make it about 20 lines long.
-If there's already a blu.md, improve it.
+If there's already a loophole.md, improve it.
 If there are Cursor rules (in .cursor/rules/ or .cursorrules) or Copilot rules (in .github/copilot-instructions.md), make sure to include them.`
 			return tea.Batch(
 				util.CmdHandler(chat.SendMsg{
@@ -1165,7 +1165,7 @@ If there are Cursor rules (in .cursor/rules/ or .cursorrules) or Copilot rules (
 				configInfo.WriteString(fmt.Sprintf("  • %s: %s\n", provider, status))
 			}
 			
-			configInfo.WriteString("\nTo set an API key, edit ~/.blu.json or .blu.json in your project")
+			configInfo.WriteString("\nTo set an API key, edit ~/.loophole.json or .loophole.json in your project")
 			configInfo.WriteString("\nUse Ctrl+O to change models")
 			
 			return util.ReportInfo(configInfo.String())
@@ -1186,9 +1186,9 @@ If there are Cursor rules (in .cursor/rules/ or .cursorrules) or Copilot rules (
 	model.RegisterCommand(dialog.Command{
 		ID:          "about",
 		Title:       "about",
-		Description: "Show information about Blu",
+		Description: "Show information about Loophole",
 		Handler: func(cmd dialog.Command) tea.Cmd {
-			about := fmt.Sprintf("%s Blu v%s\n\nAn intelligent TUI for AI-assisted coding.\nCreated by Garv Agnihotri\nhttps://github.com/Get-Blu/blu-code", styles.BluIcon, version.Version)
+			about := fmt.Sprintf("%s Loophole v%s\n\nAn intelligent TUI for AI-assisted coding.\nCreated by Garv Agnihotri\nhttps://github.com/loophole-ai/loophole-cli", styles.LoopholeIcon, version.Version)
 			return util.ReportInfo(about)
 		},
 	})
@@ -1198,7 +1198,7 @@ If there are Cursor rules (in .cursor/rules/ or .cursorrules) or Copilot rules (
 		Title:       "version",
 		Description: "Show version number",
 		Handler: func(cmd dialog.Command) tea.Cmd {
-			return util.ReportInfo(fmt.Sprintf("Blu v%s", version.Version))
+			return util.ReportInfo(fmt.Sprintf("Loophole v%s", version.Version))
 		},
 	})
 
@@ -1290,9 +1290,9 @@ If there are Cursor rules (in .cursor/rules/ or .cursorrules) or Copilot rules (
 		Description: "Show available commands and keyboard shortcuts",
 		Handler: func(cmd dialog.Command) tea.Cmd {
 			var helpText strings.Builder
-			helpText.WriteString("Blu CLI - Available Commands:\n\n")
+			helpText.WriteString("Loophole CLI - Available Commands:\n\n")
 			helpText.WriteString(" Built-in Commands:\n")
-			helpText.WriteString("  /init       - Initialize project (create Blu.md)\n")
+			helpText.WriteString("  /init       - Initialize project (create Loophole.md)\n")
 			helpText.WriteString("  /compact    - Compact/summarize current session\n")
 			helpText.WriteString("  /new        - Start a new session\n")
 			helpText.WriteString("  /sessions   - Switch sessions\n")
@@ -1301,7 +1301,7 @@ If there are Cursor rules (in .cursor/rules/ or .cursorrules) or Copilot rules (
 			helpText.WriteString("  /docs       - Show documentation links\n")
 			helpText.WriteString("  /clear      - Clear current chat view\n")
 			helpText.WriteString("  /logs       - View application logs\n")
-			helpText.WriteString("  /about      - Show information about Blu\n")
+			helpText.WriteString("  /about      - Show information about Loophole\n")
 			helpText.WriteString("  /help       - Show this help message\n")
 			helpText.WriteString("  /quit       - Exit the application\n\n")
 			
@@ -1318,11 +1318,11 @@ If there are Cursor rules (in .cursor/rules/ or .cursorrules) or Copilot rules (
 			helpText.WriteString("  Ctrl+C      - Quit\n\n")
 			
 			helpText.WriteString("  Configuration Files:\n")
-			helpText.WriteString("  Global: ~/.blu.json or ~/.config/blu/.blu.json\n")
-			helpText.WriteString("  Project: .blu.json (in project root)\n\n")
+			helpText.WriteString("  Global: ~/.loophole.json or ~/.config/loophole/.loophole.json\n")
+			helpText.WriteString("  Project: .loophole.json (in project root)\n\n")
 			
 			helpText.WriteString("  Custom Commands:\n")
-			helpText.WriteString("  Add .md files to .blu/commands/ to create custom commands\n")
+			helpText.WriteString("  Add .md files to .loophole/commands/ to create custom commands\n")
 			helpText.WriteString("  Use $VARIABLE_NAME for arguments in your commands\n")
 			
 			return util.ReportInfo(helpText.String())

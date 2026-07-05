@@ -1,5 +1,5 @@
 {
-  "$schema": "./blu-schema.json",
+  "$schema": "./loophole-schema.json",
   "lsp": {
     "gopls": {
       "command": "gopls"

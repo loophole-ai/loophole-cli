@@ -1,4 +1,4 @@
-module github.com/Get-Blu/blu-code
+module github.com/loophole-ai/loophole-cli
 
 go 1.25.5
 

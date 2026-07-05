@@ -1,8 +1,8 @@
 $ErrorActionPreference = 'Stop'
 
-$AppName = "blu"
-$RepoOwner = "Get-Blu"
-$RepoName = "blu-code"
+$AppName = "loophole"
+$RepoOwner = "loophole-ai"
+$RepoName = "loophole-cli"
 
 function Get-LatestVersion {
     $url = "https://api.github.com/repos/$RepoOwner/$RepoName/releases/latest"
@@ -18,7 +18,7 @@ $Arch = if ($env:PROCESSOR_ARCHITECTURE -eq "AMD64") { "amd64" } else { "arm64" 
 $FileName = "$AppName-$OS-$Arch.exe"
 $DownloadUrl = "https://github.com/$RepoOwner/$RepoName/releases/download/v$Version/$FileName"
 
-$InstallDir = Join-Path $HOME ".blu\bin"
+$InstallDir = Join-Path $HOME ".loophole\bin"
 if (!(Test-Path $InstallDir)) {
     New-Item -ItemType Directory -Path $InstallDir | Out-Null
 }
@@ -48,4 +48,4 @@ if ($UserPath -notlike "*$InstallDir*") {
     Write-Host "$AppName is already in your PATH." -ForegroundColor Gray
 }
 
-Write-Host "Installation complete! Try running: blu --version" -ForegroundColor Green
+Write-Host "Installation complete! Try running: loophole --version" -ForegroundColor Green
