@@ -45,6 +45,48 @@ The open-source AI-assisted coding tool for your terminal.
 
 <br>
 
+<!--
+
+<div align="center">
+<table>
+<tr>
+
+<td align="center" width="50%">
+
+### CLI
+Take it to the terminal. Chat interactively
+or run it fully headless — perfect for
+scripting, automation, and CI/CD pipelines.
+
+```
+npm i -g @loophole-ai/cli
+```
+
+<a href="https://github.com/loophole-ai/loophole-cli">Learn more →</a>
+<br><br>
+</td>
+
+<td align="center" width="50%">
+
+### IDE
+Work with your AI assistant right inside
+your editor. Get inline suggestions,
+multi-file edits, and full context of
+your codebase as you code.
+
+```
+Install IDE
+```
+
+<a href="https://github.com/loophole-ai/loophole-ide">Learn more →</a>
+<br><br>
+</td>
+</tr>
+</table>
+</div>
+
+-->
+
 <p align="center">
   <img src="logo/banner_cli.png" width="100%" alt="Loophole Banner" />
 </p>
