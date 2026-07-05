@@ -11,7 +11,7 @@ The open-source AI-assisted coding tool for your terminal.
 <div align="center">
 
 <img src="https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge" alt="License" />
-<img src="https://img.shields.io/badge/go-1.21+-00ADD8.svg?style=for-the-badge" alt="Go Version" />
+<img src="https://img.shields.io/badge/go-1.21+-FF7F00.svg?style=for-the-badge" alt="Go Version" />
 <img src="https://img.shields.io/github/stars/loophole-ai/loophole-cli?style=for-the-badge" alt="Stars" />
 <img src="https://img.shields.io/github/issues/loophole-ai/loophole-cli?style=for-the-badge" alt="Issues" />
 
