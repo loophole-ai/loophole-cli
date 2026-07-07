@@ -1,3 +1,9 @@
+## 🚧 Work in Progress
+
+This project is currently under active development. The CLI tool isn't fully functional yet — I'm actively building it out.
+<br>
+⭐ Star the repo to follow along, and check back soon for updates!
+
 <p align="center">
   <img src="logo/logo.png" width="80" alt="Loophole" />
 </p>
