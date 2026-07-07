@@ -709,6 +709,12 @@ func createAgentProvider(agentName config.AgentName) (provider.Provider, error) 
 	if !ok {
 		return nil, fmt.Errorf("agent %s not found", agentName)
 	}
+	
+	// If no model is configured, return a clear error
+	if agentConfig.Model == "" {
+		return nil, fmt.Errorf("no model configured for agent %s. Please set an API key in your config file or environment variable (ANTHROPIC_API_KEY, OPENAI_API_KEY, etc.)", agentName)
+	}
+	
 	model, ok := models.GetAllModels()[agentConfig.Model]
 	if !ok {
 		return nil, fmt.Errorf("model %s not supported", agentConfig.Model)
@@ -716,10 +722,10 @@ func createAgentProvider(agentName config.AgentName) (provider.Provider, error) 
 
 	providerCfg, ok := cfg.Providers[model.Provider]
 	if !ok {
-		return nil, fmt.Errorf("provider %s not supported", model.Provider)
+		return nil, fmt.Errorf("provider %s not configured. Please set the appropriate API key", model.Provider)
 	}
-	if providerCfg.Disabled {
-		return nil, fmt.Errorf("provider %s is not enabled", model.Provider)
+	if providerCfg.Disabled || providerCfg.APIKey == "" {
+		return nil, fmt.Errorf("provider %s is not enabled or has no API key. Please set %s_API_KEY environment variable", model.Provider, strings.ToUpper(string(model.Provider)))
 	}
 	maxTokens := model.DefaultMaxTokens
 	if agentConfig.MaxTokens > 0 {

@@ -207,10 +207,87 @@ func Load(workingDir string, debug bool) (*Config, error) {
 		cfg.Agents = make(map[AgentName]Agent)
 	}
 
-	// Override the max tokens for title agent
-	cfg.Agents[AgentTitle] = Agent{
-		Model:     cfg.Agents[AgentTitle].Model,
-		MaxTokens: 80,
+	// If no agents are configured, try to set defaults for all required agents
+	// This handles the case where no API keys are set
+	if len(cfg.Agents) == 0 {
+		logging.Info("No agents configured, attempting to set defaults")
+		
+		// Try each provider in order of preference
+		var defaultModel models.ModelID
+		var defaultProvider models.ModelProvider
+		var defaultAPIKey string
+		
+		if hasCopilotCredentials() {
+			defaultModel = models.CopilotGPT4o
+			defaultProvider = models.ProviderCopilot
+			defaultAPIKey = "github-token"
+		} else if os.Getenv("ANTHROPIC_API_KEY") != "" {
+			defaultModel = models.Claude37Sonnet
+			defaultProvider = models.ProviderAnthropic
+			defaultAPIKey = os.Getenv("ANTHROPIC_API_KEY")
+		} else if os.Getenv("OPENAI_API_KEY") != "" {
+			defaultModel = models.GPT41
+			defaultProvider = models.ProviderOpenAI
+			defaultAPIKey = os.Getenv("OPENAI_API_KEY")
+		} else if os.Getenv("OPENROUTER_API_KEY") != "" {
+			defaultModel = models.OpenRouterClaude37Sonnet
+			defaultProvider = models.ProviderOpenRouter
+			defaultAPIKey = os.Getenv("OPENROUTER_API_KEY")
+		} else if os.Getenv("GEMINI_API_KEY") != "" {
+			defaultModel = models.Gemini25
+			defaultProvider = models.ProviderGemini
+			defaultAPIKey = os.Getenv("GEMINI_API_KEY")
+		} else if os.Getenv("GROQ_API_KEY") != "" {
+			defaultModel = models.QWENQwq
+			defaultProvider = models.ProviderGROQ
+			defaultAPIKey = os.Getenv("GROQ_API_KEY")
+		} else if hasAWSCredentials() {
+			defaultModel = models.BedrockClaude37Sonnet
+			defaultProvider = models.ProviderBedrock
+			defaultAPIKey = "aws-credentials-available"
+		} else if hasVertexAICredentials() {
+			defaultModel = models.VertexAIGemini25
+			defaultProvider = models.ProviderVertexAI
+			defaultAPIKey = "vertex-credentials-available"
+		}
+		
+		if defaultModel != "" {
+			// Set up all agents with the default model
+			cfg.Agents = map[AgentName]Agent{
+				AgentCoder:      {Model: defaultModel, MaxTokens: 5000},
+				AgentSummarizer: {Model: defaultModel, MaxTokens: 5000},
+				AgentTask:       {Model: defaultModel, MaxTokens: 5000},
+				AgentTitle:      {Model: defaultModel, MaxTokens: 80},
+			}
+			cfg.Providers = map[models.ModelProvider]Provider{
+				defaultProvider: {APIKey: defaultAPIKey},
+			}
+			logging.Info("Set default agent configuration", "model", defaultModel, "provider", defaultProvider)
+		} else {
+			// No API keys found - leave agents empty and continue
+			// The app will show a helpful error when user tries to use AI
+			logging.Warn("No API keys found - app will show error when trying to use AI")
+			cfg.Agents = make(map[AgentName]Agent)
+		}
+	}
+
+	// Override the max tokens for title agent (only if it has a model configured)
+	if cfg.Agents != nil && cfg.Agents[AgentTitle].Model != "" {
+		cfg.Agents[AgentTitle] = Agent{
+			Model:     cfg.Agents[AgentTitle].Model,
+			MaxTokens: 80,
+		}
+	} else if cfg.Agents != nil && len(cfg.Agents) > 0 {
+		// Title agent not set, try to set it from another agent's model
+		for name, agent := range cfg.Agents {
+			if name != AgentTitle && agent.Model != "" {
+				cfg.Agents[AgentTitle] = Agent{
+					Model:     agent.Model,
+					MaxTokens: 80,
+				}
+				break
+			}
+		}
 	}
 	return cfg, nil
 }
@@ -679,6 +756,11 @@ func setDefaultModelForAgent(agent AgentName) bool {
 			Model:     models.CopilotGPT4o,
 			MaxTokens: maxTokens,
 		}
+		// Also add the provider configuration
+		if cfg.Providers == nil {
+			cfg.Providers = make(map[models.ModelProvider]Provider)
+		}
+		cfg.Providers[models.ProviderCopilot] = Provider{APIKey: "github-token"}
 		return true
 	}
 	// Check providers in order of preference
@@ -691,6 +773,11 @@ func setDefaultModelForAgent(agent AgentName) bool {
 			Model:     models.Claude37Sonnet,
 			MaxTokens: maxTokens,
 		}
+		// Also add the provider configuration
+		if cfg.Providers == nil {
+			cfg.Providers = make(map[models.ModelProvider]Provider)
+		}
+		cfg.Providers[models.ProviderAnthropic] = Provider{APIKey: apiKey}
 		return true
 	}
 
@@ -719,6 +806,11 @@ func setDefaultModelForAgent(agent AgentName) bool {
 			MaxTokens:       maxTokens,
 			ReasoningEffort: reasoningEffort,
 		}
+		// Also add the provider configuration
+		if cfg.Providers == nil {
+			cfg.Providers = make(map[models.ModelProvider]Provider)
+		}
+		cfg.Providers[models.ProviderOpenAI] = Provider{APIKey: apiKey}
 		return true
 	}
 
@@ -747,6 +839,11 @@ func setDefaultModelForAgent(agent AgentName) bool {
 			MaxTokens:       maxTokens,
 			ReasoningEffort: reasoningEffort,
 		}
+		// Also add the provider configuration
+		if cfg.Providers == nil {
+			cfg.Providers = make(map[models.ModelProvider]Provider)
+		}
+		cfg.Providers[models.ProviderOpenRouter] = Provider{APIKey: apiKey}
 		return true
 	}
 
@@ -765,6 +862,11 @@ func setDefaultModelForAgent(agent AgentName) bool {
 			Model:     model,
 			MaxTokens: maxTokens,
 		}
+		// Also add the provider configuration
+		if cfg.Providers == nil {
+			cfg.Providers = make(map[models.ModelProvider]Provider)
+		}
+		cfg.Providers[models.ProviderGemini] = Provider{APIKey: apiKey}
 		return true
 	}
 
@@ -778,6 +880,11 @@ func setDefaultModelForAgent(agent AgentName) bool {
 			Model:     models.QWENQwq,
 			MaxTokens: maxTokens,
 		}
+		// Also add the provider configuration
+		if cfg.Providers == nil {
+			cfg.Providers = make(map[models.ModelProvider]Provider)
+		}
+		cfg.Providers[models.ProviderGROQ] = Provider{APIKey: apiKey}
 		return true
 	}
 
@@ -792,6 +899,11 @@ func setDefaultModelForAgent(agent AgentName) bool {
 			MaxTokens:       maxTokens,
 			ReasoningEffort: "medium", // Claude models support reasoning
 		}
+		// Also add the provider configuration
+		if cfg.Providers == nil {
+			cfg.Providers = make(map[models.ModelProvider]Provider)
+		}
+		cfg.Providers[models.ProviderBedrock] = Provider{APIKey: "aws-credentials-available"}
 		return true
 	}
 
@@ -810,6 +922,11 @@ func setDefaultModelForAgent(agent AgentName) bool {
 			Model:     model,
 			MaxTokens: maxTokens,
 		}
+		// Also add the provider configuration
+		if cfg.Providers == nil {
+			cfg.Providers = make(map[models.ModelProvider]Provider)
+		}
+		cfg.Providers[models.ProviderVertexAI] = Provider{APIKey: "vertex-credentials-available"}
 		return true
 	}
 

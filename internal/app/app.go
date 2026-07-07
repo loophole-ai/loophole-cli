@@ -14,10 +14,12 @@ import (
 	"github.com/loophole-ai/loophole-cli/internal/format"
 	"github.com/loophole-ai/loophole-cli/internal/history"
 	"github.com/loophole-ai/loophole-cli/internal/llm/agent"
+	"github.com/loophole-ai/loophole-cli/internal/llm/models"
 	"github.com/loophole-ai/loophole-cli/internal/logging"
 	"github.com/loophole-ai/loophole-cli/internal/lsp"
 	"github.com/loophole-ai/loophole-cli/internal/message"
 	"github.com/loophole-ai/loophole-cli/internal/permission"
+	"github.com/loophole-ai/loophole-cli/internal/pubsub"
 	"github.com/loophole-ai/loophole-cli/internal/session"
 	"github.com/loophole-ai/loophole-cli/internal/tui/theme"
 )
@@ -37,6 +39,47 @@ type App struct {
 	watcherCancelFuncs []context.CancelFunc
 	cancelFuncsMutex   sync.Mutex
 	watcherWG          sync.WaitGroup
+}
+
+// AgentNoOp is a no-op agent that returns an error when used
+type AgentNoOp struct{}
+
+func (a *AgentNoOp) Subscribe(ctx context.Context) <-chan pubsub.Event[agent.AgentEvent] {
+	ch := make(chan pubsub.Event[agent.AgentEvent])
+	go func() {
+		<-ctx.Done()
+		close(ch)
+	}()
+	return ch
+}
+
+func (a *AgentNoOp) Model() models.Model {
+	return models.Model{}
+}
+
+func (a *AgentNoOp) Run(ctx context.Context, sessionID string, content string, attachments ...message.Attachment) (<-chan agent.AgentEvent, error) {
+	ch := make(chan agent.AgentEvent)
+	ch <- agent.AgentEvent{
+		Type: agent.AgentEventTypeError,
+		Error: fmt.Errorf("no AI configuration - please set an API key (ANTHROPIC_API_KEY, OPENAI_API_KEY, etc.)"),
+		Done: true,
+	}
+	close(ch)
+	return ch, nil
+}
+
+func (a *AgentNoOp) Cancel(sessionID string) {}
+
+func (a *AgentNoOp) IsSessionBusy(sessionID string) bool { return false }
+
+func (a *AgentNoOp) IsBusy() bool { return false }
+
+func (a *AgentNoOp) Update(agentName config.AgentName, modelID models.ModelID) (models.Model, error) {
+	return models.Model{}, fmt.Errorf("no AI configuration")
+}
+
+func (a *AgentNoOp) Summarize(ctx context.Context, sessionID string) error {
+	return fmt.Errorf("no AI configuration")
 }
 
 func New(ctx context.Context, conn *sql.DB) (*App, error) {
@@ -59,22 +102,36 @@ func New(ctx context.Context, conn *sql.DB) (*App, error) {
 	// Initialize LSP clients in the background
 	go app.initLSPClients(ctx)
 
+	// Check if we have a valid agent configuration
+	cfg := config.Get()
+	hasValidConfig := cfg != nil && 
+		cfg.Agents != nil && 
+		len(cfg.Agents) > 0 &&
+		cfg.Agents[config.AgentCoder].Model != "" &&
+		cfg.Providers != nil &&
+		len(cfg.Providers) > 0
+
 	var err error
-	app.CoderAgent, err = agent.NewAgent(
-		config.AgentCoder,
-		app.Sessions,
-		app.Messages,
-		agent.CoderAgentTools(
-			app.Permissions,
+	if hasValidConfig {
+		app.CoderAgent, err = agent.NewAgent(
+			config.AgentCoder,
 			app.Sessions,
 			app.Messages,
-			app.History,
-			app.LSPClients,
-		),
-	)
-	if err != nil {
-		logging.Error("Failed to create coder agent", err)
-		return nil, err
+			agent.CoderAgentTools(
+				app.Permissions,
+				app.Sessions,
+				app.Messages,
+				app.History,
+				app.LSPClients,
+			),
+		)
+		if err != nil {
+			logging.Error("Failed to create coder agent", err)
+			app.CoderAgent = &AgentNoOp{}
+		}
+	} else {
+		logging.Warn("No valid AI configuration found - using no-op agent")
+		app.CoderAgent = &AgentNoOp{}
 	}
 
 	return app, nil
