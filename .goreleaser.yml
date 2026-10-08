@@ -73,10 +73,10 @@ nfpms:
   - ids:
       - loophole
     goos: linux
-    maintainer: Garv Agnihotri <garvagnihotri22@gmail.com>
+    maintainer: Loophole AI
     description: Terminal-based AI assistant for software development
     homepage: "https://github.com/loophole-ai/loophole-cli"
-    license: MIT
+    license: AGPL-3.0
     formats:
       - deb
       - rpm

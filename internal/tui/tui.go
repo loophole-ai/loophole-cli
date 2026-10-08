@@ -400,7 +400,7 @@ func (a *appModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case dialog.ProviderSelectedMsg:
 		a.showProviderDialog = false
-		
+
 		// Check if the provider already has an API key configured
 		cfg := config.Get()
 		if providerCfg, exists := cfg.Providers[msg.Provider]; exists && providerCfg.APIKey != "" {
@@ -408,7 +408,7 @@ func (a *appModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			providerName := strings.ToUpper(string(msg.Provider)[:1]) + string(msg.Provider[1:])
 			return a, util.ReportInfo(fmt.Sprintf("%s is already configured", providerName))
 		}
-		
+
 		// No API key exists, show the dialog to enter one
 		a.apiKeyDialog = dialog.NewAPIKeyDialogCmp(msg.Provider)
 		a.showAPIKeyDialog = true
@@ -852,7 +852,7 @@ func (a *appModel) View() string {
 		)
 
 	}
-	
+
 	if a.showDocsDialog {
 		overlay := a.docsDialog.View()
 		row := lipgloss.Height(appView) / 2
@@ -1146,13 +1146,13 @@ If there are Cursor rules (in .cursor/rules/ or .cursorrules) or Copilot rules (
 		Handler: func(cmd dialog.Command) tea.Cmd {
 			cfg := config.Get()
 			modelInfo := app.CoderAgent.Model()
-			
+
 			var configInfo strings.Builder
 			configInfo.WriteString("Current Configuration:\n\n")
 			configInfo.WriteString(fmt.Sprintf("Model: %s (%s)\n", modelInfo.Name, modelInfo.ID))
 			configInfo.WriteString(fmt.Sprintf("Max Tokens: %d\n", cfg.Agents[config.AgentCoder].MaxTokens))
 			configInfo.WriteString(fmt.Sprintf("Data Directory: %s\n\n", cfg.Data.Directory))
-			
+
 			configInfo.WriteString(" Providers:\n")
 			for provider, providerCfg := range cfg.Providers {
 				status := "No API Key"
@@ -1164,10 +1164,10 @@ If there are Cursor rules (in .cursor/rules/ or .cursorrules) or Copilot rules (
 				}
 				configInfo.WriteString(fmt.Sprintf("  • %s: %s\n", provider, status))
 			}
-			
+
 			configInfo.WriteString("\nTo set an API key, edit ~/.loophole.json or .loophole.json in your project")
 			configInfo.WriteString("\nUse Ctrl+O to change models")
-			
+
 			return util.ReportInfo(configInfo.String())
 		},
 	})
@@ -1188,7 +1188,7 @@ If there are Cursor rules (in .cursor/rules/ or .cursorrules) or Copilot rules (
 		Title:       "about",
 		Description: "Show information about Loophole",
 		Handler: func(cmd dialog.Command) tea.Cmd {
-			about := fmt.Sprintf("%s Loophole v%s\n\nAn intelligent TUI for AI-assisted coding.\nCreated by Garv Agnihotri\nhttps://github.com/loophole-ai/loophole-cli", styles.LoopholeIcon, version.Version)
+			about := fmt.Sprintf("%s Loophole v%s\n\nAn intelligent TUI for AI-assisted coding.\nLicensed under AGPL-3.0\nhttps://github.com/loophole-ai/loophole-cli", styles.LoopholeIcon, version.Version)
 			return util.ReportInfo(about)
 		},
 	})
@@ -1304,7 +1304,7 @@ If there are Cursor rules (in .cursor/rules/ or .cursorrules) or Copilot rules (
 			helpText.WriteString("  /about      - Show information about Loophole\n")
 			helpText.WriteString("  /help       - Show this help message\n")
 			helpText.WriteString("  /quit       - Exit the application\n\n")
-			
+
 			helpText.WriteString("  Keyboard Shortcuts:\n")
 			helpText.WriteString("  Ctrl+K      - Open commands dialog\n")
 			helpText.WriteString("  Ctrl+O      - Model selection\n")
@@ -1316,15 +1316,15 @@ If there are Cursor rules (in .cursor/rules/ or .cursorrules) or Copilot rules (
 			helpText.WriteString("  Ctrl+N      - New session\n")
 			helpText.WriteString("  Ctrl+D      - Documentation\n")
 			helpText.WriteString("  Ctrl+C      - Quit\n\n")
-			
+
 			helpText.WriteString("  Configuration Files:\n")
 			helpText.WriteString("  Global: ~/.loophole.json or ~/.config/loophole/.loophole.json\n")
 			helpText.WriteString("  Project: .loophole.json (in project root)\n\n")
-			
+
 			helpText.WriteString("  Custom Commands:\n")
 			helpText.WriteString("  Add .md files to .loophole/commands/ to create custom commands\n")
 			helpText.WriteString("  Use $VARIABLE_NAME for arguments in your commands\n")
-			
+
 			return util.ReportInfo(helpText.String())
 		},
 	})

@@ -24,8 +24,8 @@
   "scripts": {
     "postinstall": "node scripts/install-npm.js"
   },
-  "author": "loophole-ai",
-  "license": "MIT",
+  "author": "Loophole AI",
+  "license": "AGPL-3.0",
   "engines": {
     "node": ">=14.0.0"
   },
@@ -42,6 +42,8 @@
     "bin/cli.js",
     "scripts/install-npm.js",
     "README.md",
-    "LICENSE"
+    "LICENSE.txt",
+    "LICENSE-blu-code.txt",
+    "NOTICE.md"
   ]
 }

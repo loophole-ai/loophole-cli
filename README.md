@@ -10,7 +10,7 @@ The open-source AI-assisted coding tool for your terminal.
 
 <div align="center">
 
-<img src="https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge" alt="License" />
+<img src="https://img.shields.io/badge/license-AGPL--3.0-blue.svg?style=for-the-badge" alt="License" />
 <img src="https://img.shields.io/badge/go-1.25.5+-FF7F00.svg?style=for-the-badge" alt="Go Version" />
 <img src="https://img.shields.io/github/stars/loophole-ai/loophole-cli?style=for-the-badge" alt="Stars" />
 <img src="https://img.shields.io/github/issues/loophole-ai/loophole-cli?style=for-the-badge" alt="Issues" />
@@ -45,7 +45,6 @@ The open-source AI-assisted coding tool for your terminal.
 
 <br>
 
-<!--
 
 <div align="center">
 <table>
@@ -75,7 +74,7 @@ multi-file edits, and full context of
 your codebase as you code.
 
 ```
-Install IDE
+git clone https://github.com/loophole-ai/loophole-ide.git
 ```
 
 <a href="https://github.com/loophole-ai/loophole-ide">Learn more →</a>
@@ -85,7 +84,6 @@ Install IDE
 </table>
 </div>
 
--->
 
 <p align="center">
   <img src="logo/banner_cli.png" width="100%" alt="Loophole Banner" />
@@ -436,14 +434,18 @@ Loophole builds on the excellent work of many open-source projects:
 
 ## License
 
-Loophole is licensed under the **MIT License**. See [LICENSE](./LICENSE) for the full license text.
+Loophole is licensed under the **GNU Affero General Public License v3.0**
+(AGPL-3.0). See [LICENSE.txt](./LICENSE.txt) for the full license text.
 
-This project is a rebranded fork of the upstream `blu-code` project. See [NOTICE.md](./NOTICE.md) for attribution details.
+This project is a fork of the upstream `blu-code` project, which is licensed
+under the MIT License. The original copyright notices are retained in
+[LICENSE-blu-code.txt](./LICENSE-blu-code.txt). See
+[NOTICE.md](./NOTICE.md) for full attribution details.
 
 ---
 
 <div align="center">
 
-**Garv Agnihotri** — Open Source • AI-Powered Terminal Coding
+**Loophole AI** — Open Source • AI-Powered Terminal Coding
 
 </div>
