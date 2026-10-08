@@ -57,17 +57,22 @@ checksum:
 snapshot:
   version_template: "{{ .Version }}-{{ .Timestamp }}"
 
-# Correct GoReleaser v2 syntax for overwriting existing releases
+# Append to an existing release rather than replacing it, so a re-run never
+# silently discards the notes and assets of a published version.
 release:
   github:
     owner: loophole-ai
     name: loophole-cli
-  mode: replace
+  mode: append
   make_latest: true
 
 nfpms:
-  - builds:
+  # Linux only. nfpm has no way to build a deb or rpm for another platform,
+  # and listing every build here stopped the release before any artifact was
+  # produced.
+  - ids:
       - loophole
+    goos: linux
     maintainer: Garv Agnihotri <garvagnihotri22@gmail.com>
     description: Terminal-based AI assistant for software development
     homepage: "https://github.com/loophole-ai/loophole-cli"

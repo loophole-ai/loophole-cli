@@ -1,9 +1,3 @@
-## 🚧 Work in Progress
-
-This project is currently under active development. The CLI tool isn't fully functional yet — I'm actively building it out.
-<br>
-⭐ Star the repo to follow along, and check back soon for updates!
-
 <p align="center">
   <img src="logo/logo.png" width="80" alt="Loophole" />
 </p>
@@ -17,7 +11,7 @@ The open-source AI-assisted coding tool for your terminal.
 <div align="center">
 
 <img src="https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge" alt="License" />
-<img src="https://img.shields.io/badge/go-1.21+-FF7F00.svg?style=for-the-badge" alt="Go Version" />
+<img src="https://img.shields.io/badge/go-1.25.5+-FF7F00.svg?style=for-the-badge" alt="Go Version" />
 <img src="https://img.shields.io/github/stars/loophole-ai/loophole-cli?style=for-the-badge" alt="Stars" />
 <img src="https://img.shields.io/github/issues/loophole-ai/loophole-cli?style=for-the-badge" alt="Issues" />
 
@@ -128,12 +122,30 @@ Loophole is a Go-powered terminal UI that transforms your command line into an i
 
 ## Supported Models
 
+Loophole reads its model catalogue from [models.dev](https://models.dev), so
+every provider and model listed there is selectable, and the list stays current
+without a Loophole release. A few to start with:
+
 | Provider | Models |
 |----------|--------|
-| Anthropic (Claude) | `claude-3.7-sonnet` (recommended for coding), `claude-3.5-sonnet`, `claude-4.6-opus` |
-| OpenAI | `o3-ultra`, `gpt-5.3-codex`, `gpt-4o` |
-| Google | `gemini-3-deep-think`, `gemini-2.0-flash`, `gemini-1.5-pro` |
+| Anthropic (Claude) | `claude-sonnet-5`, `claude-opus-4-6`, `claude-haiku-4-5` |
+| OpenAI | `gpt-5.4`, `gpt-5.2-pro`, `gpt-4o` |
+| Google | `gemini-3.7-flash`, `gemini-3.5-flash`, `gemini-2.5-pro` |
 | DeepSeek | `deepseek-v3`, `deepseek-r1` |
+
+Any OpenAI-compatible endpoint works too. Give it a `baseUrl` in your config
+alongside the key:
+
+```json
+{
+  "providers": {
+    "my-endpoint": {
+      "apiKey": "your-key",
+      "baseUrl": "https://api.example.com/v1"
+    }
+  }
+}
+```
 
 ---
 
@@ -141,12 +153,12 @@ Loophole is a Go-powered terminal UI that transforms your command line into an i
 
 ### Prerequisites
 
-- Go 1.21 or higher (only required when building from source)
+- Go 1.25.5 or higher (only required when building from source)
 
 ### Via npm (recommended)
 
 ```bash
-npm install -g @loophole-ai/loophole-cli
+npm install -g @loophole-ai/cli
 ```
 
 ### Via raw script
@@ -166,7 +178,7 @@ cd loophole-cli
 go mod download
 
 # Build
-go build -o loophole
+go build -o loophole .
 
 # Run tests
 go test ./...
@@ -174,6 +186,9 @@ go test ./...
 # Install globally
 sudo mv loophole /usr/local/bin/
 ```
+
+On Windows, build with `go build -o loophole.exe .` and put `loophole.exe`
+somewhere on your `PATH`.
 
 ### Setup
 
@@ -190,7 +205,7 @@ export ANTHROPIC_API_KEY="your-key-here"
 {
   "agents": {
     "coder": {
-      "model": "claude-3.7-sonnet",
+      "model": "claude-sonnet-5",
       "maxTokens": 8192
     }
   },
@@ -306,12 +321,11 @@ Place `.loophole.json` in your home directory (`~/.loophole.json`) or project ro
 {
   "agents": {
     "coder": {
-      "model": "claude-3.7-sonnet",
-      "maxTokens": 8192,
-      "temperature": 0.7
+      "model": "claude-sonnet-5",
+      "maxTokens": 8192
     },
     "summarizer": {
-      "model": "gpt-4o-mini",
+      "model": "claude-haiku-4-5",
       "maxTokens": 2048
     }
   },
@@ -330,10 +344,16 @@ Place `.loophole.json` in your home directory (`~/.loophole.json`) or project ro
 | Variable | Purpose |
 |----------|---------|
 | `ANTHROPIC_API_KEY` | Claude API access |
-| `OPENAI_API_KEY` | GPT-4 API access |
+| `OPENAI_API_KEY` | GPT API access |
 | `GEMINI_API_KEY` | Gemini API access |
-| `LOOPHOLE_DEBUG=true` | Enable debug logging |
-| `LOOPHOLE_CONFIG=/path/to/.loophole.json` | Custom config location |
+| `GROQ_API_KEY` | Groq API access |
+| `OPENROUTER_API_KEY` | OpenRouter API access |
+| `XAI_API_KEY` | xAI API access |
+| `AZURE_OPENAI_API_KEY` | Azure OpenAI access (with `AZURE_OPENAI_ENDPOINT`) |
+| `LOOPHOLE_DEV_DEBUG` | Mirror debug logs to stderr for troubleshooting |
+
+`loophole --debug` (or `-d`) enables debug logging, which is the option to reach
+for first when something misbehaves.
 
 ---
 
@@ -366,7 +386,7 @@ Comprehensive documentation is available in the `docs/` directory:
 
 **Loophole won't start**
 - Check your API keys are set
-- Verify Go 1.21+ is installed
+- Verify Go 1.25.5+ is installed
 - Try `loophole --debug` for detailed logs
 
 **AI can't see my files**
@@ -410,7 +430,7 @@ Loophole builds on the excellent work of many open-source projects:
 - **[Bubble Tea](https://github.com/charmbracelet/bubbletea)** - Excellent TUI framework
 - **[Lip Gloss](https://github.com/charmbracelet/lipgloss)** - Style definitions for TUI
 - **[Go-GitHub](https://github.com/google/go-github)** - GitHub API client
-- **[Sqlite3](https://github.com/mattn/go-sqlite3)** - Local persistence
+- **[go-sqlite3](https://github.com/ncruces/go-sqlite3)** - Local persistence, pure Go, no CGO
 
 ---
 

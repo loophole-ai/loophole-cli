@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-APP_NAME="loophole-cli"
+APP_NAME="loophole"
 APP_EXEC="loophole"
 
 RED='\033[0;31m'
@@ -38,7 +38,9 @@ mkdir -p "$INSTALL_DIR"
 
 if [ -z "$requested_version" ]; then
     latest_release_json=$(curl -s https://api.github.com/repos/loophole-ai/loophole-cli/releases/latest)
-    specific_version=$(echo "$latest_release_json" | grep -oP '"tag_name": "\K[^"]+' | sed 's/^v//')
+    # sed rather than grep -P: the Perl regex mode is a GNU extension and is
+    # absent on macOS, where the install then failed on the first line.
+    specific_version=$(echo "$latest_release_json" | tr ',' '\n' | sed -n 's/.*"tag_name": *"v*\([^"]*\)".*/\1/p' | head -n 1)
     url="https://github.com/loophole-ai/loophole-cli/releases/latest/download/$filename"
 else
     url="https://github.com/loophole-ai/loophole-cli/releases/download/v${requested_version}/$filename"
