@@ -69,6 +69,10 @@ type providerClientOptions struct {
 	geminiOptions    []GeminiOption
 	bedrockOptions   []BedrockOption
 	copilotOptions   []CopilotOption
+
+	// openaiBaseURL is the endpoint a caller configured, kept alongside the
+	// option so a provider without a hand written client can still be reached.
+	openaiBaseURL string
 }
 
 type ProviderClientOption func(*providerClientOptions)
@@ -180,6 +184,20 @@ func NewProvider(providerName models.ModelProvider, opts ...ProviderClientOption
 		// TODO: implement mock client for test
 		panic("not implemented")
 	}
+
+	// Anything else that has been given an endpoint is treated as OpenAI
+	// compatible, which is what the overwhelming majority of hosted providers
+	// are. The catalogue lists hundreds of providers and there is a hand
+	// written client for about a dozen, so rejecting the rest left the CLI
+	// usable with only a few providers.
+	if clientOptions.openaiBaseURL != "" {
+		clientOptions.openaiOptions = append(clientOptions.openaiOptions, WithOpenAIBaseURL(clientOptions.openaiBaseURL))
+		return &baseProvider[OpenAIClient]{
+			options: clientOptions,
+			client:  newOpenAIClient(clientOptions),
+		}, nil
+	}
+
 	return nil, fmt.Errorf("provider not supported: %s", providerName)
 }
 

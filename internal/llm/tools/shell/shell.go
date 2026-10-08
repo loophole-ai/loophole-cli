@@ -7,12 +7,14 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"sync"
 	"syscall"
 	"time"
 
 	"github.com/loophole-ai/loophole-cli/internal/config"
+	"github.com/loophole-ai/loophole-cli/internal/logging"
 )
 
 type PersistentShell struct {
@@ -58,29 +60,65 @@ func GetPersistentShell(workingDir string) *PersistentShell {
 	return shellInstance
 }
 
+// defaultShell is the shell used when none is configured.
+//
+// Windows has no bash, and asking for one left the shell unable to start and
+// every command in the session failed.
+func defaultShell() string {
+	if shell := os.Getenv("SHELL"); shell != "" {
+		return shell
+	}
+	if runtime.GOOS == "windows" {
+		for _, candidate := range []string{
+			os.Getenv("COMSPEC"),
+			`C:\Windows\System32\cmd.exe`,
+			"cmd.exe",
+		} {
+			if candidate == "" {
+				continue
+			}
+			if _, err := os.Stat(candidate); err == nil {
+				return candidate
+			}
+		}
+		return "cmd.exe"
+	}
+	return "/bin/bash"
+}
+
+// defaultShellArgs are the arguments a login shell needs.
+//
+// PowerShell and cmd have no login mode, and passing one made them exit at
+// once with an error no user could act on.
+func defaultShellArgs() []string {
+	switch runtime.GOOS {
+	case "windows":
+		return []string{"/Q"}
+	default:
+		return []string{"-l"}
+	}
+}
+
 func newPersistentShell(cwd string) *PersistentShell {
 	// Get shell configuration from config
 	cfg := config.Get()
-	
+
 	// Default to environment variable if config is not set or nil
 	var shellPath string
 	var shellArgs []string
-	
+
 	if cfg != nil {
 		shellPath = cfg.Shell.Path
 		shellArgs = cfg.Shell.Args
 	}
-	
+
 	if shellPath == "" {
-		shellPath = os.Getenv("SHELL")
-		if shellPath == "" {
-			shellPath = "/bin/bash"
-		}
+		shellPath = defaultShell()
 	}
-	
+
 	// Default shell args
 	if len(shellArgs) == 0 {
-		shellArgs = []string{"-l"}
+		shellArgs = defaultShellArgs()
 	}
 
 	cmd := exec.Command(shellPath, shellArgs...)
@@ -88,6 +126,7 @@ func newPersistentShell(cwd string) *PersistentShell {
 
 	stdinPipe, err := cmd.StdinPipe()
 	if err != nil {
+		logging.Error("Failed to open shell stdin", "shell", shellPath, "error", err)
 		return nil
 	}
 
@@ -95,6 +134,7 @@ func newPersistentShell(cwd string) *PersistentShell {
 
 	err = cmd.Start()
 	if err != nil {
+		logging.Error("Failed to start shell", "shell", shellPath, "args", shellArgs, "error", err)
 		return nil
 	}
 
@@ -269,6 +309,11 @@ func (s *PersistentShell) killChildren() {
 }
 
 func (s *PersistentShell) Exec(ctx context.Context, command string, timeoutMs int) (string, string, int, bool, error) {
+	// A shell that could not be started is nil, and reading through it took
+	// the whole process down. Report it as a failed command instead.
+	if s == nil {
+		return "", "No usable shell. Set shell.path in your config.", 1, false, errors.New("shell unavailable")
+	}
 	if !s.isAlive {
 		return "", "Shell is not alive", 1, false, errors.New("shell is not alive")
 	}

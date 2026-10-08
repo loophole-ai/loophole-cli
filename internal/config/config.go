@@ -54,6 +54,12 @@ type Agent struct {
 type Provider struct {
 	APIKey   string `json:"apiKey"`
 	Disabled bool   `json:"disabled"`
+	// BaseURL overrides the endpoint for providers that speak the OpenAI API.
+	//
+	// Most hosted models are reachable through an OpenAI compatible endpoint
+	// but are not one of the providers with a hand written client here, so
+	// without this there was no way to use any of them at all.
+	BaseURL string `json:"baseUrl,omitempty"`
 }
 
 // Data defines storage configuration.
@@ -211,12 +217,12 @@ func Load(workingDir string, debug bool) (*Config, error) {
 	// This handles the case where no API keys are set
 	if len(cfg.Agents) == 0 {
 		logging.Info("No agents configured, attempting to set defaults")
-		
+
 		// Try each provider in order of preference
 		var defaultModel models.ModelID
 		var defaultProvider models.ModelProvider
 		var defaultAPIKey string
-		
+
 		if hasCopilotCredentials() {
 			defaultModel = models.CopilotGPT4o
 			defaultProvider = models.ProviderCopilot
@@ -250,7 +256,7 @@ func Load(workingDir string, debug bool) (*Config, error) {
 			defaultProvider = models.ProviderVertexAI
 			defaultAPIKey = "vertex-credentials-available"
 		}
-		
+
 		if defaultModel != "" {
 			// Set up all agents with the default model
 			cfg.Agents = map[AgentName]Agent{
@@ -286,6 +292,18 @@ func Load(workingDir string, debug bool) (*Config, error) {
 					MaxTokens: 80,
 				}
 				break
+			}
+		}
+	}
+
+	// The summarizer is built alongside the coder and needs a model of its own.
+	// A config that names only a coder left it missing, and building the agent
+	// then failed, so nothing worked at all however the coder was configured.
+	if cfg.Agents != nil && cfg.Agents[AgentSummarizer].Model == "" {
+		if coder, ok := cfg.Agents[AgentCoder]; ok && coder.Model != "" {
+			cfg.Agents[AgentSummarizer] = Agent{
+				Model:     coder.Model,
+				MaxTokens: coder.MaxTokens,
 			}
 		}
 	}

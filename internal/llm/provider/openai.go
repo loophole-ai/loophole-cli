@@ -9,14 +9,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/openai/openai-go"
-	"github.com/openai/openai-go/option"
-	"github.com/openai/openai-go/shared"
 	"github.com/loophole-ai/loophole-cli/internal/config"
 	"github.com/loophole-ai/loophole-cli/internal/llm/models"
 	"github.com/loophole-ai/loophole-cli/internal/llm/tools"
 	"github.com/loophole-ai/loophole-cli/internal/logging"
 	"github.com/loophole-ai/loophole-cli/internal/message"
+	"github.com/openai/openai-go"
+	"github.com/openai/openai-go/option"
+	"github.com/openai/openai-go/shared"
 )
 
 type openaiOptions struct {
@@ -45,7 +45,7 @@ func newOpenAIClient(opts providerClientOptions) OpenAIClient {
 	}
 
 	openaiClientOptions := []option.RequestOption{}
-	
+
 	// Ensure OpenRouter specific headers are set if using OpenRouter
 	isOpenRouter := strings.Contains(openaiOpts.baseURL, "openrouter.ai")
 	if isOpenRouter {
@@ -80,7 +80,6 @@ func newOpenAIClient(opts providerClientOptions) OpenAIClient {
 		client:          client,
 	}
 }
-
 
 func (o *openaiClient) convertMessages(messages []message.Message) (openaiMessages []openai.ChatCompletionMessageParamUnion) {
 	// Add system message first
@@ -189,11 +188,11 @@ func (o *openaiClient) preparedParams(messages []openai.ChatCompletionMessagePar
 
 	if o.providerOptions.model.CanReason == true {
 		params.MaxCompletionTokens = openai.Int(o.providerOptions.maxTokens)
-		
+
 		// Reasoning effort is only supported by OpenAI o1/o3 models
-		isOpenAIReasoningModel := strings.HasPrefix(string(o.providerOptions.model.ID), "openai.o") || 
-								  strings.HasPrefix(string(o.providerOptions.model.ID), "azure.o")
-								  
+		isOpenAIReasoningModel := strings.HasPrefix(string(o.providerOptions.model.ID), "openai.o") ||
+			strings.HasPrefix(string(o.providerOptions.model.ID), "azure.o")
+
 		if isOpenAIReasoningModel {
 			switch o.options.reasoningEffort {
 			case "low":
@@ -268,7 +267,7 @@ func (o *openaiClient) send(ctx context.Context, messages []message.Message, too
 
 func (o *openaiClient) stream(ctx context.Context, messages []message.Message, tools []tools.BaseTool) <-chan ProviderEvent {
 	params := o.preparedParams(o.convertMessages(messages), o.convertTools(tools))
-	
+
 	// OpenRouter and some other providers have issues with IncludeUsage in StreamOptions
 	if !strings.Contains(o.options.baseURL, "openrouter.ai") {
 		params.StreamOptions = openai.ChatCompletionStreamOptionsParam{
@@ -314,12 +313,12 @@ func (o *openaiClient) stream(ctx context.Context, messages []message.Message, t
 					// Handle reasoning/thinking process for models like DeepSeek R1
 					// Note: ReasoningContent is not yet available in the official OpenAI Go SDK
 					/*
-					if choice.Delta.ReasoningContent != "" {
-						eventChan <- ProviderEvent{
-							Type:     EventThinkingDelta,
-							Thinking: choice.Delta.ReasoningContent,
+						if choice.Delta.ReasoningContent != "" {
+							eventChan <- ProviderEvent{
+								Type:     EventThinkingDelta,
+								Thinking: choice.Delta.ReasoningContent,
+							}
 						}
-					}
 					*/
 				}
 			}
@@ -327,18 +326,18 @@ func (o *openaiClient) stream(ctx context.Context, messages []message.Message, t
 			err := openaiStream.Err()
 			if err == nil || errors.Is(err, io.EOF) {
 				// Stream completed successfully
-				
+
 				// Safety check: ensure we have choices in the accumulator
 				if len(acc.ChatCompletion.Choices) == 0 {
 					logging.ErrorPersist("Stream completed but accumulator has no choices")
 					eventChan <- ProviderEvent{
-						Type: EventError,
+						Type:  EventError,
 						Error: fmt.Errorf("no response received from provider (empty choices)"),
 					}
 					close(eventChan)
 					return
 				}
-				
+
 				finishReason := o.finishReason(string(acc.ChatCompletion.Choices[0].FinishReason))
 				if len(acc.ChatCompletion.Choices[0].Message.ToolCalls) > 0 {
 					toolCalls = append(toolCalls, o.toolCalls(acc.ChatCompletion)...)
@@ -457,6 +456,17 @@ func (o *openaiClient) usage(completion openai.ChatCompletion) TokenUsage {
 func WithOpenAIBaseURL(baseURL string) OpenAIOption {
 	return func(options *openaiOptions) {
 		options.baseURL = baseURL
+	}
+}
+
+// WithProviderBaseURL points a provider at a caller supplied endpoint.
+//
+// It records the endpoint on the shared options as well as the OpenAI client
+// options. The shared copy is what lets a provider with no hand written client
+// be recognised as reachable at all.
+func WithProviderBaseURL(baseURL string) ProviderClientOption {
+	return func(options *providerClientOptions) {
+		options.openaiBaseURL = baseURL
 	}
 }
 

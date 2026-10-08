@@ -80,19 +80,19 @@ type modelKeyMap struct {
 var modelKeys = modelKeyMap{
 	Up: key.NewBinding(
 		key.WithKeys("up"),
-		key.WithHelp("↑", "previous model"),
+		key.WithHelp("â†‘", "previous model"),
 	),
 	Down: key.NewBinding(
 		key.WithKeys("down"),
-		key.WithHelp("↓", "next model"),
+		key.WithHelp("â†“", "next model"),
 	),
 	Left: key.NewBinding(
 		key.WithKeys("left"),
-		key.WithHelp("←", "scroll left"),
+		key.WithHelp("â†", "scroll left"),
 	),
 	Right: key.NewBinding(
 		key.WithKeys("right"),
-		key.WithHelp("→", "scroll right"),
+		key.WithHelp("â†’", "scroll right"),
 	),
 	Enter: key.NewBinding(
 		key.WithKeys("enter"),
@@ -298,19 +298,19 @@ func (m *modelDialogCmp) getScrollIndicators(maxWidth int) string {
 
 	if limit > numVisibleModels {
 		if m.scrollOffset > 0 {
-			indicator += "↑ "
+			indicator += "â†‘ "
 		}
 		if m.scrollOffset+numVisibleModels < limit {
-			indicator += "↓ "
+			indicator += "â†“ "
 		}
 	}
 
 	if m.hScrollPossible && m.mode == modeModels {
 		if m.hScrollOffset > 0 {
-			indicator = "← " + indicator
+			indicator = "â† " + indicator
 		}
 		if m.hScrollOffset < len(m.availableProviders)-1 {
-			indicator += "→"
+			indicator += "â†’"
 		}
 	}
 
@@ -348,8 +348,8 @@ func (m *modelDialogCmp) setupModels() {
 func GetSelectedModel(cfg *config.Config) models.Model {
 	agentCfg := cfg.Agents[config.AgentCoder]
 	selectedModelId := agentCfg.Model
-	
-	// Use GetAllModels() which includes both static and Catwalk models
+
+	// Use GetAllModels() which includes both static and remote models
 	return models.GetAllModels()[selectedModelId]
 }
 
@@ -416,10 +416,10 @@ func (m *modelDialogCmp) setupModelsForProvider(provider models.ModelProvider) {
 
 func getModelsForProvider(provider models.ModelProvider) []models.Model {
 	var providerModels []models.Model
-	
-	// Use GetAllModels() which includes both static and Catwalk models
+
+	// Use GetAllModels() which includes both static and remote models
 	allModels := models.GetAllModels()
-	
+
 	for _, model := range allModels {
 		if model.Provider == provider {
 			providerModels = append(providerModels, model)
@@ -442,14 +442,14 @@ func getModelsForProvider(provider models.ModelProvider) []models.Model {
 func (m *modelDialogCmp) setupProvidersOnly() {
 	// Get all available providers from both static and dynamic models
 	providerMap := make(map[models.ModelProvider]bool)
-	
+
 	// Add static providers
 	for _, model := range models.SupportedModels {
 		providerMap[model.Provider] = true
 	}
-	
-	// Add dynamic Catwalk providers
-	for _, model := range models.GetCatwalkModels() {
+
+	// Add providers from the remote catalogue
+	for _, model := range models.GetRemoteModels() {
 		providerMap[model.Provider] = true
 	}
 
@@ -462,10 +462,14 @@ func (m *modelDialogCmp) setupProvidersOnly() {
 	slices.SortFunc(providers, func(a, b models.ModelProvider) int {
 		rA := models.ProviderPopularity[a]
 		rB := models.ProviderPopularity[b]
-		
-		if rA == 0 { rA = 999 }
-		if rB == 0 { rB = 999 }
-		
+
+		if rA == 0 {
+			rA = 999
+		}
+		if rB == 0 {
+			rB = 999
+		}
+
 		if rA != rB {
 			return rA - rB
 		}

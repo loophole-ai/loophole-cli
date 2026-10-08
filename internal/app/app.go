@@ -57,12 +57,18 @@ func (a *AgentNoOp) Model() models.Model {
 	return models.Model{}
 }
 
+// Run reports that there is no agent.
+//
+// The channel is buffered and the send happens after the return. Sending on an
+// unbuffered channel before returning blocked forever, because nobody reads
+// until Run has returned, so a missing configuration took the whole process
+// down with a deadlock instead of showing the message that explains it.
 func (a *AgentNoOp) Run(ctx context.Context, sessionID string, content string, attachments ...message.Attachment) (<-chan agent.AgentEvent, error) {
-	ch := make(chan agent.AgentEvent)
+	ch := make(chan agent.AgentEvent, 1)
 	ch <- agent.AgentEvent{
-		Type: agent.AgentEventTypeError,
+		Type:  agent.AgentEventTypeError,
 		Error: fmt.Errorf("no AI configuration - please set an API key (ANTHROPIC_API_KEY, OPENAI_API_KEY, etc.)"),
-		Done: true,
+		Done:  true,
 	}
 	close(ch)
 	return ch, nil
@@ -104,8 +110,8 @@ func New(ctx context.Context, conn *sql.DB) (*App, error) {
 
 	// Check if we have a valid agent configuration
 	cfg := config.Get()
-	hasValidConfig := cfg != nil && 
-		cfg.Agents != nil && 
+	hasValidConfig := cfg != nil &&
+		cfg.Agents != nil &&
 		len(cfg.Agents) > 0 &&
 		cfg.Agents[config.AgentCoder].Model != "" &&
 		cfg.Providers != nil &&
@@ -126,7 +132,9 @@ func New(ctx context.Context, conn *sql.DB) (*App, error) {
 			),
 		)
 		if err != nil {
-			logging.Error("Failed to create coder agent", err)
+			// The reason the agent could not be built is the only thing that
+			// explains a run that produces no output at all.
+			logging.Error("Failed to create coder agent", "error", err)
 			app.CoderAgent = &AgentNoOp{}
 		}
 	} else {

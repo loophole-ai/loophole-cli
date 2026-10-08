@@ -223,22 +223,22 @@ func shouldSkip(path string, ignorePatterns []string) bool {
 	return false
 }
 
+// createFileTree turns a list of paths into a tree of nodes.
+//
+// Paths are split on both separators rather than the one for the running
+// operating system. A forward slash is what a user types, what a glob pattern
+// carries and what the model writes, so on Windows splitting on a backslash
+// alone left every such path as a single node.
 func createFileTree(sortedPaths []string) []*TreeNode {
 	root := []*TreeNode{}
 	pathMap := make(map[string]*TreeNode)
 
 	for _, path := range sortedPaths {
-		parts := strings.Split(path, string(filepath.Separator))
+		parts := strings.FieldsFunc(path, func(r rune) bool {
+			return r == '/' || r == '\\'
+		})
 		currentPath := ""
 		var parentPath string
-
-		var cleanParts []string
-		for _, part := range parts {
-			if part != "" {
-				cleanParts = append(cleanParts, part)
-			}
-		}
-		parts = cleanParts
 
 		if len(parts) == 0 {
 			continue
@@ -257,7 +257,7 @@ func createFileTree(sortedPaths []string) []*TreeNode {
 			}
 
 			isLastPart := i == len(parts)-1
-			isDir := !isLastPart || strings.HasSuffix(path, string(filepath.Separator))
+			isDir := !isLastPart || strings.HasSuffix(path, "/") || strings.HasSuffix(path, `\`)
 			nodeType := "file"
 			if isDir {
 				nodeType = "directory"
@@ -286,10 +286,16 @@ func createFileTree(sortedPaths []string) []*TreeNode {
 	return root
 }
 
+// treeSeparator marks a directory in the printed tree.
+//
+// A forward slash regardless of platform: the tree is read by a model, and a
+// backslash there is an escape character rather than a path separator.
+const treeSeparator = "/"
+
 func printTree(tree []*TreeNode, rootPath string) string {
 	var result strings.Builder
 
-	result.WriteString(fmt.Sprintf("- %s%s\n", rootPath, string(filepath.Separator)))
+	result.WriteString(fmt.Sprintf("- %s%s\n", rootPath, treeSeparator))
 
 	for _, node := range tree {
 		printNode(&result, node, 1)
@@ -303,7 +309,7 @@ func printNode(builder *strings.Builder, node *TreeNode, level int) {
 
 	nodeName := node.Name
 	if node.Type == "directory" {
-		nodeName += string(filepath.Separator)
+		nodeName += treeSeparator
 	}
 
 	fmt.Fprintf(builder, "%s- %s\n", indent, nodeName)

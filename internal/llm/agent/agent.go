@@ -709,12 +709,12 @@ func createAgentProvider(agentName config.AgentName) (provider.Provider, error) 
 	if !ok {
 		return nil, fmt.Errorf("agent %s not found", agentName)
 	}
-	
+
 	// If no model is configured, return a clear error
 	if agentConfig.Model == "" {
 		return nil, fmt.Errorf("no model configured for agent %s. Please set an API key in your config file or environment variable (ANTHROPIC_API_KEY, OPENAI_API_KEY, etc.)", agentName)
 	}
-	
+
 	model, ok := models.GetAllModels()[agentConfig.Model]
 	if !ok {
 		return nil, fmt.Errorf("model %s not supported", agentConfig.Model)
@@ -736,6 +736,11 @@ func createAgentProvider(agentName config.AgentName) (provider.Provider, error) 
 		provider.WithModel(model),
 		provider.WithSystemMessage(prompt.GetAgentPrompt(agentName, model.Provider)),
 		provider.WithMaxTokens(maxTokens),
+	}
+	// A provider with a configured endpoint is reached over the OpenAI API,
+	// which is what every provider outside the hand written client list needs.
+	if providerCfg.BaseURL != "" {
+		opts = append(opts, provider.WithProviderBaseURL(providerCfg.BaseURL))
 	}
 	if model.Provider == models.ProviderOpenAI || model.Provider == models.ProviderLocal && model.CanReason {
 		opts = append(

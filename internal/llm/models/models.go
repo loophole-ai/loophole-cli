@@ -120,11 +120,9 @@ func init() {
 	maps.Copy(SupportedModels, CopilotModels)
 	maps.Copy(SupportedModels, DeepSeekModels)
 	maps.Copy(SupportedModels, MistralModels)
-	
-	// Fetch Catwalk models in background
-	// This will populate dynamic models without blocking startup
+
+	// Fetch the model catalogue in the background so it does not block startup.
 	go func() {
-		_ = FetchCatwalkModels()
+		_ = FetchModels()
 	}()
 }
-

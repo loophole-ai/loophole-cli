@@ -3,7 +3,6 @@ module github.com/loophole-ai/loophole-cli
 go 1.25.5
 
 require (
-	charm.land/catwalk v0.19.3
 	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.7.0
 	github.com/JohannesKaufmann/html-to-markdown v1.6.0
 	github.com/PuerkitoBio/goquery v1.9.2
@@ -33,8 +32,6 @@ require (
 	github.com/spf13/viper v1.20.0
 	github.com/stretchr/testify v1.11.1
 )
-
-require github.com/charmbracelet/x/etag v0.2.0 // indirect
 
 require (
 	cloud.google.com/go v0.116.0 // indirect
