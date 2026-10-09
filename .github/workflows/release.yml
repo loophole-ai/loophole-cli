@@ -63,7 +63,10 @@ jobs:
           TAG="${{ inputs.tag || github.ref_name }}"
           VERSION="${TAG#v}"
           echo "Publishing npm package version: $VERSION"
-          npm version "$VERSION" --no-git-tag-version
+          # The manifest already carries the release number, and npm refuses to
+          # set a version it already has, so this failed the first release with
+          # "Version not changed" before anything was published.
+          npm version "$VERSION" --no-git-tag-version --allow-same-version
 
       - name: Publish to npm
         run: npm publish --access public

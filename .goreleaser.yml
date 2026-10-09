@@ -60,11 +60,14 @@ snapshot:
 # Append to an existing release rather than replacing it, so a re-run never
 # silently discards the notes and assets of a published version. Both `mode`
 # and `make_latest` are options of release itself, not of its github block.
+# Replacing existing artifacts makes a re-run safe: without it, uploading an
+# asset that is already there fails with a 422.
 release:
   github:
     owner: loophole-ai
     name: loophole-cli
   mode: append
+  replace_existing_artifacts: true
   make_latest: true
 
 # Debian and RPM packages are not built for 1.0.0. nfpm only produces Linux
