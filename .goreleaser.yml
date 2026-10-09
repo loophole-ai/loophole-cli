@@ -58,33 +58,22 @@ snapshot:
   version_template: "{{ .Version }}-{{ .Timestamp }}"
 
 # Append to an existing release rather than replacing it, so a re-run never
-# silently discards the notes and assets of a published version. `mode` belongs
-# to the provider block; `make_latest` is a release level option.
+# silently discards the notes and assets of a published version. Both `mode`
+# and `make_latest` are options of release itself, not of its github block.
 release:
   github:
     owner: loophole-ai
     name: loophole-cli
-    mode: append
+  mode: append
   make_latest: true
 
-nfpms:
-  # Linux only. nfpm has no way to build a deb or rpm for another platform,
-  # and listing every build here stopped the release before any artifact was
-  # produced. The documented way to filter is `if`; there is no `goos` key.
-  - ids:
-      - loophole
-    if: '{{ eq .Os "linux" }}'
-    maintainer: Loophole AI
-    description: Terminal-based AI assistant for software development
-    homepage: "https://github.com/loophole-ai/loophole-cli"
-    license: AGPL-3.0
-    formats:
-      - deb
-      - rpm
-    file_name_template: >-
-      {{ .ProjectName }}-
-      {{- if eq .Os "darwin" }}mac
-      {{- else }}{{ .Os }}{{ end }}-{{ .Arch }}
+# Debian and RPM packages are not built for 1.0.0. nfpm only produces Linux
+# packages, and the way to keep it away from the Windows and macOS builds is
+# the `if` filter, which is a GoReleaser Pro feature. The setting is absent in
+# the open source build, so it was rejected as an unknown field. Packaging can
+# come back once the release works, either with Pro or by giving nfpm a build
+# of its own that only targets Linux. Every platform is already covered by the
+# archives and the bare binaries above.
 
 changelog:
   sort: asc
