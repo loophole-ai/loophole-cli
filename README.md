@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="logo/logo.png" width="80" alt="Loophole" />
+</p>
+
 <h1 align="center">Loophole</h1>
 
 <p align="center">
