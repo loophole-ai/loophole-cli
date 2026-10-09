@@ -5,44 +5,55 @@ import (
 	"strings"
 )
 
-// Build-time parameters set via -ldflags
-var Version = "1.0.0"
-
-// defaultVersion marks the value compiled in rather than injected at build
-// time. Release builds overwrite it with -X, and only then is the build
-// metadata consulted.
-const defaultVersion = "1.0.0"
-
-// A user may install loophole using `go install github.com/loophole-ai/loophole-cli@latest`.
-// without -ldflags, in which case the version above is unset. As a workaround
-// we use the embedded build version that *is* set when using `go install` (and
-// is only set for `go install` and not for `go build`).
+// unset is the placeholder compiled in. A release build replaces it with
+// -X, so a value that is still this placeholder means no version was injected.
 //
-// The build metadata is only consulted when no version was injected. A plain
-// `go build` inside a checkout reports a pseudo version such as
-// v0.0.0-20260101000000-abcdef+dirty, which was overriding the real version
-// and made a release binary report a different version than the tag it was
-// built from.
+// The placeholder has to be distinguishable from every real version, including
+// the one compiled in below. An earlier attempt used the release number itself
+// as the marker, which cannot tell "not injected" apart from "injected with
+// the same number", so a release binary fell through and reported a pseudo
+// version instead of the tag it was built from.
+const unset = "unset-at-build-time"
+
+// defaultVersion is what a build reports when nothing was injected at build
+// time. Release builds overwrite it.
+var Version = unset
+
+// version is resolved once, at startup, in this order:
+//
+//  1. the value injected with -X, which is how every release is built
+//  2. a real tag recorded by `go install module@version`
+//  3. the compiled in fallback below
 func init() {
-	if Version != defaultVersion {
+	if Version != unset {
 		return
 	}
+
+	Version = defaultVersion
 
 	info, ok := debug.ReadBuildInfo()
 	if !ok {
-		// < go v1.18
 		return
 	}
-	mainVersion := info.Main.Version
-	if mainVersion == "" || mainVersion == "(devel)" || mainVersion == "unknown" {
-		// bin not built using `go install` or version not embedded
-		return
+
+	switch recorded := info.Main.Version; {
+	case recorded == "" || recorded == "(devel)" || recorded == "unknown":
+	case isPseudoVersion(recorded):
+	default:
+		Version = recorded
 	}
-	// A pseudo version describes the checkout rather than a release, so it is
-	// less useful than the compiled in number.
-	if strings.HasPrefix(mainVersion, "v0.0.0-") {
-		return
-	}
-	// bin built using `go install`
-	Version = mainVersion
 }
+
+// isPseudoVersion reports whether a recorded version describes a checkout
+// rather than a release.
+//
+// Go stamps binaries built from a local repository with a pseudo version, which
+// carries a build timestamp and a commit hash. Those two forms are the ones
+// seen here: v0.0.0-20060102150405-abcdefabcdef when the tree has no tag, and
+// v1.0.1-0.20060102150405-abcdefabcdef when it is one commit past a tag.
+func isPseudoVersion(v string) bool {
+	return strings.HasPrefix(v, "v0.0.0-") || strings.Contains(v, "-0.")
+}
+
+// defaultVersion is reported when the build recorded no usable version.
+const defaultVersion = "1.0.0"
