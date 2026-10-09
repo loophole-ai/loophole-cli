@@ -56,6 +56,7 @@ Loophole.md
 *.db
 *.db-wal
 *.db-shm
+*.db-journal
 *.sqlite
 *.sqlite3
 
@@ -63,4 +64,8 @@ Loophole.md
 coverage.txt
 *.prof
 *.coverprofile
+
+# Patch and merge leftovers from applying a diff
+*.orig
+*.rej
 
