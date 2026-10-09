@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing tag to release, for example v1.0.0'
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -17,6 +23,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          # A manual run has no tag ref, so fall back to the tag that was asked
+          # for. Without this a manual release would build whatever the default
+          # branch happens to be and publish it under the tag name.
+          ref: ${{ inputs.tag || github.ref }}
           fetch-depth: 0  # GoReleaser needs full git history for changelog
 
       - name: Set up Go
@@ -39,6 +49,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag || github.ref }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -48,8 +60,8 @@ jobs:
 
       - name: Sync version from git tag
         run: |
-          VERSION="${{ github.ref_name }}"
-          VERSION="${VERSION#v}"
+          TAG="${{ inputs.tag || github.ref_name }}"
+          VERSION="${TAG#v}"
           echo "Publishing npm package version: $VERSION"
           npm version "$VERSION" --no-git-tag-version
 
