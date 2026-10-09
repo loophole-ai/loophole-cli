@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 APP_NAME="loophole"
-APP_EXEC="loophole"
+APP_EXEC="loophole-cli"
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -63,8 +63,8 @@ print_message() {
 }
 
 check_version() {
-    if command -v loophole >/dev/null 2>&1; then
-        loophole_path=$(which loophole)
+    if command -v loophole-cli >/dev/null 2>&1; then
+        loophole_path=$(which loophole-cli)
 
 
         ## TODO: check if version is installed
@@ -106,9 +106,9 @@ add_to_path() {
     local command=$2
 
     if [[ -w $config_file ]]; then
-        echo -e "\n# loophole" >> "$config_file"
+        echo -e "\n# loophole-cli" >> "$config_file"
         echo "$command" >> "$config_file"
-        print_message info "Successfully added ${ORANGE}loophole ${GREEN}to \$PATH in $config_file"
+        print_message info "Successfully added ${ORANGE}loophole-cli ${GREEN}to \$PATH in $config_file"
     else
         print_message warning "Manually add the directory to $config_file (or similar):"
         print_message info "  $command"

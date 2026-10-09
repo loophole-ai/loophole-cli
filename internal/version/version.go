@@ -52,8 +52,8 @@ func init() {
 // seen here: v0.0.0-20060102150405-abcdefabcdef when the tree has no tag, and
 // v1.0.1-0.20060102150405-abcdefabcdef when it is one commit past a tag.
 func isPseudoVersion(v string) bool {
-	return strings.HasPrefix(v, "v0.0.0-") || strings.Contains(v, "-0.")
+	return strings.HasPrefix(v, "v0.0.0-") || strings.Contains(v, "-0.") || strings.Contains(v, "+")
 }
 
 // defaultVersion is reported when the build recorded no usable version.
-const defaultVersion = "1.0.1"
+const defaultVersion = "1.0.2"

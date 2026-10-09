@@ -1,6 +1,6 @@
 {
   "name": "@loophole-ai/cli",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Terminal-based AI assistant for software development",
   "keywords": [
     "ai",
@@ -19,7 +19,8 @@
     "url": "git+https://github.com/loophole-ai/loophole-cli.git"
   },
   "bin": {
-    "loophole": "./bin/cli.js"
+    "loophole-cli": "./bin/cli.js",
+    "lhc": "./bin/cli.js"
   },
   "scripts": {
     "postinstall": "node scripts/install-npm.js"

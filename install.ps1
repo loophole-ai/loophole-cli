@@ -1,6 +1,7 @@
 $ErrorActionPreference = 'Stop'
 
 $AppName = "loophole"
+$Command = "loophole-cli"
 $RepoOwner = "loophole-ai"
 $RepoName = "loophole-cli"
 
@@ -23,7 +24,7 @@ if (!(Test-Path $InstallDir)) {
     New-Item -ItemType Directory -Path $InstallDir | Out-Null
 }
 
-$DestFile = Join-Path $InstallDir "$AppName.exe"
+$DestFile = Join-Path $InstallDir "$Command.exe"
 
 Write-Host "Downloading $AppName v$Version..." -ForegroundColor Cyan
 Write-Host "URL: $DownloadUrl" -ForegroundColor Gray
@@ -35,7 +36,7 @@ try {
     exit 1
 }
 
-Write-Host "Successfully installed $AppName to $InstallDir" -ForegroundColor Green
+Write-Host "Successfully installed $Command to $InstallDir" -ForegroundColor Green
 
 # Add to PATH if not already there
 $UserPath = [Environment]::GetEnvironmentVariable("Path", "User")
@@ -45,7 +46,7 @@ if ($UserPath -notlike "*$InstallDir*") {
     $env:Path += ";$InstallDir"
     Write-Host "Please restart your terminal or run: `$env:Path += ';$InstallDir'`" -ForegroundColor Cyan
 } else {
-    Write-Host "$AppName is already in your PATH." -ForegroundColor Gray
+    Write-Host "$Command is already in your PATH." -ForegroundColor Gray
 }
 
-Write-Host "Installation complete! Try running: loophole --version" -ForegroundColor Green
+Write-Host "Installation complete! Try running: loophole-cli --version" -ForegroundColor Green

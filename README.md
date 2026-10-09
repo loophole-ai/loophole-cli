@@ -160,6 +160,19 @@ npm install -g @loophole-ai/cli
 curl -fsSL https://raw.githubusercontent.com/loophole-ai/loophole-cli/main/install | bash
 ```
 
+### The command name
+
+The CLI installs as **`loophole-cli`**, with **`lhc`** as a short alias:
+
+```bash
+loophole-cli          # full name
+lhc                   # short alias, same thing
+```
+
+It is deliberately not called `loophole`, because that is the command the
+[Loophole IDE](https://github.com/loophole-ai/loophole-ide) installs. Keeping the
+two apart means both can be installed and neither shadows the other.
+
 ### From source
 
 ```bash
@@ -209,7 +222,7 @@ export ANTHROPIC_API_KEY="your-key-here"
 3. Launch Loophole:
 
 ```bash
-loophole
+loophole-cli
 ```
 
 ---
@@ -218,7 +231,7 @@ loophole
 
 ### Basic Workflow
 
-1. **Start a conversation** - Launch `loophole` and ask a question
+1. **Start a conversation** - Launch `loophole-cli` and ask a question
 2. **Let AI explore** - Loophole can read files, search your codebase, and understand context
 3. **Review changes** - See proposed file modifications in the sidebar
 4. **Apply or reject** - Accept changes you want, skip the rest
