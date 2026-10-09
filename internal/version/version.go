@@ -56,4 +56,4 @@ func isPseudoVersion(v string) bool {
 }
 
 // defaultVersion is reported when the build recorded no usable version.
-const defaultVersion = "1.0.0"
+const defaultVersion = "1.0.1"

@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="logo/logo.png" width="80" alt="Loophole" />
-</p>
-
 <h1 align="center">Loophole</h1>
 
 <p align="center">
@@ -84,17 +80,12 @@ git clone https://github.com/loophole-ai/loophole-ide.git
 </table>
 </div>
 
-
-<p align="center">
-  <img src="logo/banner_cli.png" width="100%" alt="Loophole Banner" />
-</p>
-
 ## Overview
 
 Loophole is a Go-powered terminal UI that transforms your command line into an intelligent development environment. It connects to leading AI models and provides them with powerful tools to read, analyze, and modify your codebase — all from an elegant TUI built with [Bubble Tea](https://github.com/charmbracelet/bubbletea).
 
 <p align="center">
-  <img src="assets/loophole-cli-main.png" width="100%" alt="Loophole Banner" />
+  <img src="assets/loophole-cli-main.png" width="100%" alt="Loophole CLI interface" />
 </p>
 
 **Key capabilities:**
