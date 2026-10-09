@@ -8,6 +8,8 @@ import (
 	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+
+	"github.com/charmbracelet/x/ansi"
 	"github.com/loophole-ai/loophole-cli/internal/config"
 	"github.com/loophole-ai/loophole-cli/internal/llm/models"
 	"github.com/loophole-ai/loophole-cli/internal/tui/layout"
@@ -80,19 +82,19 @@ type modelKeyMap struct {
 var modelKeys = modelKeyMap{
 	Up: key.NewBinding(
 		key.WithKeys("up"),
-		key.WithHelp("â†‘", "previous model"),
+		key.WithHelp("\u2191", "previous model"),
 	),
 	Down: key.NewBinding(
 		key.WithKeys("down"),
-		key.WithHelp("â†“", "next model"),
+		key.WithHelp("\u2193", "next model"),
 	),
 	Left: key.NewBinding(
 		key.WithKeys("left"),
-		key.WithHelp("â†", "scroll left"),
+		key.WithHelp("\u2190", "scroll left"),
 	),
 	Right: key.NewBinding(
 		key.WithKeys("right"),
-		key.WithHelp("â†’", "scroll right"),
+		key.WithHelp("\u2192", "scroll right"),
 	),
 	Enter: key.NewBinding(
 		key.WithKeys("enter"),
@@ -240,7 +242,7 @@ func (m *modelDialogCmp) View() string {
 		Bold(true).
 		Width(maxDialogWidth).
 		Padding(0, 0, 1).
-		Render(titleText)
+		Render(ansi.Truncate(titleText, maxDialogWidth, "…"))
 
 	// Render visible models
 	var items []string
@@ -255,7 +257,7 @@ func (m *modelDialogCmp) View() string {
 			}
 			pName := string(m.availableProviders[i])
 			pName = strings.ToUpper(pName[:1]) + pName[1:]
-			items = append(items, itemStyle.Render(pName))
+			items = append(items, itemStyle.Render(ansi.Truncate(pName, maxDialogWidth, "…")))
 		}
 	} else {
 		endIdx := min(m.scrollOffset+numVisibleModels, len(m.models))
@@ -267,7 +269,7 @@ func (m *modelDialogCmp) View() string {
 				itemStyle = itemStyle.Background(t.Primary()).
 					Foreground(t.Background()).Bold(true)
 			}
-			items = append(items, itemStyle.Render(m.models[i].Name))
+			items = append(items, itemStyle.Render(ansi.Truncate(m.models[i].Name, maxDialogWidth, "…")))
 		}
 	}
 
@@ -298,19 +300,19 @@ func (m *modelDialogCmp) getScrollIndicators(maxWidth int) string {
 
 	if limit > numVisibleModels {
 		if m.scrollOffset > 0 {
-			indicator += "â†‘ "
+			indicator += "\u2191 "
 		}
 		if m.scrollOffset+numVisibleModels < limit {
-			indicator += "â†“ "
+			indicator += "\u2193 "
 		}
 	}
 
 	if m.hScrollPossible && m.mode == modeModels {
 		if m.hScrollOffset > 0 {
-			indicator = "â† " + indicator
+			indicator = "\u2190 " + indicator
 		}
 		if m.hScrollOffset < len(m.availableProviders)-1 {
-			indicator += "â†’"
+			indicator += "\u2192"
 		}
 	}
 
