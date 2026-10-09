@@ -19,7 +19,7 @@ builds:
 
 archives:
   - id: default
-    builds:
+    ids:
       - loophole
     formats:
       - tar.gz
@@ -38,7 +38,7 @@ archives:
           - zip
 
   - id: binary
-    builds:
+    ids:
       - loophole
     formats:
       - binary
@@ -58,21 +58,22 @@ snapshot:
   version_template: "{{ .Version }}-{{ .Timestamp }}"
 
 # Append to an existing release rather than replacing it, so a re-run never
-# silently discards the notes and assets of a published version.
+# silently discards the notes and assets of a published version. `mode` belongs
+# to the provider block; `make_latest` is a release level option.
 release:
   github:
     owner: loophole-ai
     name: loophole-cli
-  mode: append
+    mode: append
   make_latest: true
 
 nfpms:
   # Linux only. nfpm has no way to build a deb or rpm for another platform,
   # and listing every build here stopped the release before any artifact was
-  # produced.
+  # produced. The documented way to filter is `if`; there is no `goos` key.
   - ids:
       - loophole
-    goos: linux
+    if: '{{ eq .Os "linux" }}'
     maintainer: Loophole AI
     description: Terminal-based AI assistant for software development
     homepage: "https://github.com/loophole-ai/loophole-cli"
