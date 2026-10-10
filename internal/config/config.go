@@ -154,6 +154,10 @@ func Load(workingDir string, debug bool) (*Config, error) {
 	// Load and merge local config
 	mergeLocalConfig(workingDir)
 
+	// Remember which agents were configured by hand, before setProviderDefaults
+	// fills the rest in from whatever provider key it can see.
+	explicitAgents := explicitAgentModels()
+
 	setProviderDefaults()
 
 	// Apply configuration to the struct
@@ -277,37 +281,97 @@ func Load(workingDir string, debug bool) (*Config, error) {
 		}
 	}
 
-	// Override the max tokens for title agent (only if it has a model configured)
-	if cfg.Agents != nil && cfg.Agents[AgentTitle].Model != "" {
+	applyAgentDefaults(explicitAgents)
+
+	return cfg, nil
+}
+
+// explicitAgentModels reports which agents the user configured themselves. It
+// has to be called before setProviderDefaults, because that function seeds
+// viper defaults for every agent and after the defaults are in place a seeded
+// model is indistinguishable from a chosen one.
+func explicitAgentModels() map[AgentName]bool {
+	return map[AgentName]bool{
+		AgentCoder:      viper.InConfig("agents.coder.model"),
+		AgentTask:       viper.InConfig("agents.task.model"),
+		AgentTitle:      viper.InConfig("agents.title.model"),
+		AgentSummarizer: viper.InConfig("agents.summarizer.model"),
+	}
+}
+
+// applyAgentDefaults points the auxiliary agents at the coder's model unless the
+// user picked one for them.
+//
+// setProviderDefaults derives a model for every agent from the first provider key
+// it finds. In a config that lists several providers - a real key for the coder
+// alongside a leftover or placeholder key for something else - that key belongs to
+// a different provider than the one the coder runs on, so the title request went
+// out with the wrong key and came back "api key is not valid", leaving every new
+// session stuck on the "New Session" placeholder.
+func applyAgentDefaults(explicit map[AgentName]bool) {
+	if cfg.Agents == nil {
+		return
+	}
+
+	// The title is a handful of tokens no matter what the coder spends.
+	if title := cfg.Agents[AgentTitle]; explicit[AgentTitle] && title.Model != "" {
 		cfg.Agents[AgentTitle] = Agent{
-			Model:     cfg.Agents[AgentTitle].Model,
-			MaxTokens: 80,
-		}
-	} else if cfg.Agents != nil && len(cfg.Agents) > 0 {
-		// Title agent not set, try to set it from another agent's model
-		for name, agent := range cfg.Agents {
-			if name != AgentTitle && agent.Model != "" {
-				cfg.Agents[AgentTitle] = Agent{
-					Model:     agent.Model,
-					MaxTokens: 80,
-				}
-				break
-			}
+			Model:     title.Model,
+			MaxTokens: titleMaxTokens(title.Model),
 		}
 	}
 
-	// The summarizer is built alongside the coder and needs a model of its own.
-	// A config that names only a coder left it missing, and building the agent
-	// then failed, so nothing worked at all however the coder was configured.
-	if cfg.Agents != nil && cfg.Agents[AgentSummarizer].Model == "" {
-		if coder, ok := cfg.Agents[AgentCoder]; ok && coder.Model != "" {
-			cfg.Agents[AgentSummarizer] = Agent{
-				Model:     coder.Model,
-				MaxTokens: coder.MaxTokens,
+	coder, hasCoder := cfg.Agents[AgentCoder]
+	if !hasCoder || coder.Model == "" {
+		// Nothing to follow. Any defaults seeded earlier have to stand on their
+		// own, or the title request would go out with no model at all.
+		if title := cfg.Agents[AgentTitle]; !explicit[AgentTitle] && title.Model != "" {
+			cfg.Agents[AgentTitle] = Agent{
+				Model:     title.Model,
+				MaxTokens: titleMaxTokens(title.Model),
 			}
 		}
+		return
 	}
-	return cfg, nil
+
+	if !explicit[AgentTitle] {
+		cfg.Agents[AgentTitle] = Agent{
+			Model:     coder.Model,
+			MaxTokens: titleMaxTokens(coder.Model),
+		}
+	}
+	// The summarizer and the task agent follow the coder unless the user chose
+	// for them.
+	//
+	// These used to be filled in only when they were empty. setProviderDefaults
+	// had already seeded both from whichever provider key it happened to find
+	// first, and a seeded model is not an empty one, so the guard never passed
+	// and the auxiliary agents kept whatever provider that was. In a config
+	// carrying a leftover key alongside the real one, the summarizer then went
+	// out with the wrong key and came back "api key is not valid".
+	if !explicit[AgentSummarizer] {
+		cfg.Agents[AgentSummarizer] = Agent{
+			Model:     coder.Model,
+			MaxTokens: coder.MaxTokens,
+		}
+	}
+	if !explicit[AgentTask] {
+		cfg.Agents[AgentTask] = Agent{
+			Model:     coder.Model,
+			MaxTokens: coder.MaxTokens,
+		}
+	}
+}
+
+// titleMaxTokens is the budget for the agent that names a session. A reasoning
+// model spends part of that budget thinking out loud, so with the flat budget
+// there was nothing left over for the title itself and the session stayed
+// unnamed.
+func titleMaxTokens(model models.ModelID) int64 {
+	if modelInfo, ok := models.GetAllModels()[model]; ok && modelInfo.CanReason {
+		return 512
+	}
+	return 80
 }
 
 // configureViper sets up viper's configuration paths and environment variables.

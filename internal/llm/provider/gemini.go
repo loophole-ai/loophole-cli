@@ -138,14 +138,19 @@ func (g *geminiClient) convertTools(tools []tools.BaseTool) []*genai.Tool {
 
 	for _, tool := range tools {
 		info := tool.Info()
+		// A schema with no required fields has to leave the list out rather
+		// than send it empty, which strict validators reject.
+		schema := &genai.Schema{
+			Type:       genai.TypeObject,
+			Properties: convertSchemaProperties(info.Parameters),
+		}
+		if len(info.Required) > 0 {
+			schema.Required = info.Required
+		}
 		declaration := &genai.FunctionDeclaration{
 			Name:        info.Name,
 			Description: info.Description,
-			Parameters: &genai.Schema{
-				Type:       genai.TypeObject,
-				Properties: convertSchemaProperties(info.Parameters),
-				Required:   info.Required,
-			},
+			Parameters:  schema,
 		}
 
 		geminiTool.FunctionDeclarations = append(geminiTool.FunctionDeclarations, declaration)

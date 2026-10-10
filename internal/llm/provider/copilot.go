@@ -10,14 +10,14 @@ import (
 	"os"
 	"time"
 
-	"github.com/openai/openai-go"
-	"github.com/openai/openai-go/option"
-	"github.com/openai/openai-go/shared"
 	"github.com/loophole-ai/loophole-cli/internal/config"
 	"github.com/loophole-ai/loophole-cli/internal/llm/models"
 	toolsPkg "github.com/loophole-ai/loophole-cli/internal/llm/tools"
 	"github.com/loophole-ai/loophole-cli/internal/logging"
 	"github.com/loophole-ai/loophole-cli/internal/message"
+	"github.com/openai/openai-go"
+	"github.com/openai/openai-go/option"
+	"github.com/openai/openai-go/shared"
 )
 
 type copilotOptions struct {
@@ -251,15 +251,20 @@ func (c *copilotClient) convertTools(tools []toolsPkg.BaseTool) []openai.ChatCom
 
 	for i, tool := range tools {
 		info := tool.Info()
+		// A "required" list has to be left out rather than sent empty. Gateways
+		// that validate function schemas reject an empty list.
+		parameters := openai.FunctionParameters{
+			"type":       "object",
+			"properties": info.Parameters,
+		}
+		if len(info.Required) > 0 {
+			parameters["required"] = info.Required
+		}
 		copilotTools[i] = openai.ChatCompletionToolParam{
 			Function: openai.FunctionDefinitionParam{
 				Name:        info.Name,
 				Description: openai.String(info.Description),
-				Parameters: openai.FunctionParameters{
-					"type":       "object",
-					"properties": info.Parameters,
-					"required":   info.Required,
-				},
+				Parameters:  parameters,
 			},
 		}
 	}
@@ -668,4 +673,3 @@ func WithCopilotBearerToken(bearerToken string) CopilotOption {
 		options.bearerToken = bearerToken
 	}
 }
-

@@ -146,15 +146,22 @@ func (o *openaiClient) convertTools(tools []tools.BaseTool) []openai.ChatComplet
 
 	for i, tool := range tools {
 		info := tool.Info()
+		// A "required" list has to be left out rather than sent empty. Gateways
+		// that validate function schemas reject an empty list, and the refusal
+		// comes back after the response has started streaming, which surfaced as
+		// "received error while streaming" with no mention of the schema.
+		parameters := openai.FunctionParameters{
+			"type":       "object",
+			"properties": info.Parameters,
+		}
+		if len(info.Required) > 0 {
+			parameters["required"] = info.Required
+		}
 		openaiTools[i] = openai.ChatCompletionToolParam{
 			Function: openai.FunctionDefinitionParam{
 				Name:        info.Name,
 				Description: openai.String(info.Description),
-				Parameters: openai.FunctionParameters{
-					"type":       "object",
-					"properties": info.Parameters,
-					"required":   info.Required,
-				},
+				Parameters:  parameters,
 			},
 		}
 	}
@@ -392,8 +399,12 @@ func (o *openaiClient) stream(ctx context.Context, messages []message.Message, t
 func (o *openaiClient) shouldRetry(attempts int, err error) (bool, int64, error) {
 	var apierr *openai.Error
 	if !errors.As(err, &apierr) {
-		// Not an OpenAI error type - could be OpenRouter or network error
-		logging.Debug("Non-OpenAI error encountered", "error", err, "errorType", fmt.Sprintf("%T", err))
+		// Not an OpenAI error type - could be OpenRouter or network error.
+		// Gateways that relay an upstream failure inside the stream report it
+		// this way, so the payload is worth keeping: it is the only place the
+		// real reason for the failure appears.
+		logging.ErrorPersist(fmt.Sprintf("request to %s failed for model %s: %v",
+			o.options.baseURL, o.providerOptions.model.ID, err))
 		return false, 0, fmt.Errorf("provider error: %w", err)
 	}
 

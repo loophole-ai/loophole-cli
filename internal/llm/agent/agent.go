@@ -151,17 +151,44 @@ func (a *agent) IsSessionBusy(sessionID string) bool {
 	return busy
 }
 
+// titleMaxLength is the longest title kept for a session.
+const titleMaxLength = 50
+
+// generateTitle names a session from the message that started it. A model that
+// cannot be reached, or that answers with nothing, falls back to a title cut
+// from that message, so a session never sits on the "New Session" placeholder
+// for the rest of its life.
 func (a *agent) generateTitle(ctx context.Context, sessionID string, content string) error {
-	if content == "" {
-		return nil
-	}
-	if a.titleProvider == nil {
+	if strings.TrimSpace(content) == "" {
 		return nil
 	}
 	session, err := a.sessions.Get(ctx, sessionID)
 	if err != nil {
 		return err
 	}
+
+	title := a.askForTitle(ctx, sessionID, content)
+	if title == "" {
+		title = fallbackTitle(content)
+	}
+	if title == "" {
+		return nil
+	}
+
+	session.Title = title
+	_, err = a.sessions.Save(ctx, session)
+	return err
+}
+
+// askForTitle asks the title model for a short title. It returns an empty string
+// when there is no title model or the request fails, leaving the caller to fall
+// back rather than aborting the naming of the session.
+func (a *agent) askForTitle(ctx context.Context, sessionID string, content string) string {
+	if a.titleProvider == nil {
+		logging.Debug("No title model configured, falling back to the first message")
+		return ""
+	}
+
 	ctx = context.WithValue(ctx, tools.SessionIDContextKey, sessionID)
 	parts := []message.ContentPart{message.TextContent{Text: content}}
 	response, err := a.titleProvider.SendMessages(
@@ -175,17 +202,38 @@ func (a *agent) generateTitle(ctx context.Context, sessionID string, content str
 		make([]tools.BaseTool, 0),
 	)
 	if err != nil {
-		return err
+		logging.WarnPersist(fmt.Sprintf("title model failed, falling back to the first message: %v", err))
+		return ""
+	}
+	if response == nil {
+		return ""
 	}
 
 	title := strings.TrimSpace(strings.ReplaceAll(response.Content, "\n", " "))
-	if title == "" {
-		return nil
-	}
+	return truncateTitle(title)
+}
 
-	session.Title = title
-	_, err = a.sessions.Save(ctx, session)
-	return err
+// fallbackTitle turns the first message of a session into a title without asking
+// a model, for when there is no title model or it cannot be reached.
+func fallbackTitle(content string) string {
+	title := strings.TrimSpace(content)
+	if idx := strings.IndexAny(title, "\r\n"); idx != -1 {
+		title = strings.TrimSpace(title[:idx])
+	}
+	return truncateTitle(strings.Join(strings.Fields(title), " "))
+}
+
+// truncateTitle keeps a title on a single line and within the length limit,
+// cutting on rune boundaries so a title never ends mid character.
+func truncateTitle(title string) string {
+	if title == "" {
+		return ""
+	}
+	runes := []rune(title)
+	if len(runes) <= titleMaxLength {
+		return title
+	}
+	return strings.TrimSpace(string(runes[:titleMaxLength])) + "..."
 }
 
 func (a *agent) err(err error) AgentEvent {
@@ -244,7 +292,7 @@ func (a *agent) processGeneration(ctx context.Context, sessionID, content string
 			})
 			titleErr := a.generateTitle(context.Background(), sessionID, content)
 			if titleErr != nil {
-				logging.ErrorPersist(fmt.Sprintf("failed to generate title: %v", titleErr))
+				logging.ErrorPersist(fmt.Sprintf("failed to save title: %v", titleErr))
 			}
 		}()
 	}
