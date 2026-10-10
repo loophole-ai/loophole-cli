@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"regexp"
 	"strings"
 	"sync"
 	"time"
@@ -154,38 +155,61 @@ func (a *agent) IsSessionBusy(sessionID string) bool {
 // titleMaxLength is the longest title kept for a session.
 const titleMaxLength = 50
 
-// generateTitle names a session from the message that started it. A model that
-// cannot be reached, or that answers with nothing, falls back to a title cut
-// from that message, so a session never sits on the "New Session" placeholder
-// for the rest of its life.
+// generateTitle names a session from the message that started it.
+//
+// Three things can each leave a session on the "New Session" placeholder, so
+// every step reports what it did. A title model that cannot be reached, or that
+// answers with nothing usable, falls back to a title cut from that first
+// message, which means a session is only left unnamed when there was no message
+// to name it after in the first place.
+//
+// This runs on its own goroutine, off the back of the first message of a
+// session, so nothing here may block the turn that started it.
 func (a *agent) generateTitle(ctx context.Context, sessionID string, content string) error {
+	// A message that is nothing but whitespace has nothing to name the session
+	// after, so there is no point spending a request on it.
 	if strings.TrimSpace(content) == "" {
+		logging.Debug("Skipping title generation: first message is empty")
 		return nil
 	}
+
+	// Load the session so its title can be written back. If this fails there is
+	// no row to update and the fallback below would have nowhere to go.
 	session, err := a.sessions.Get(ctx, sessionID)
 	if err != nil {
+		logging.ErrorPersist(fmt.Sprintf("title generation: could not load session %s: %v", sessionID, err))
 		return err
 	}
 
 	title := a.askForTitle(ctx, sessionID, content)
 	if title == "" {
+		// The title model gave nothing usable. The first message is a poor
+		// title but a real one, and far better than the placeholder.
 		title = fallbackTitle(content)
+		logging.InfoPersist("Named session from the first message instead of the title model")
 	}
 	if title == "" {
+		logging.Debug("Skipping title generation: no title and no fallback available")
 		return nil
 	}
 
 	session.Title = title
-	_, err = a.sessions.Save(ctx, session)
-	return err
+	if _, err := a.sessions.Save(ctx, session); err != nil {
+		logging.ErrorPersist(fmt.Sprintf("title generation: could not save title %q: %v", title, err))
+		return err
+	}
+	logging.InfoPersist(fmt.Sprintf("Named session %q", title))
+	return nil
 }
 
-// askForTitle asks the title model for a short title. It returns an empty string
-// when there is no title model or the request fails, leaving the caller to fall
-// back rather than aborting the naming of the session.
+// askForTitle asks the title model for a short title.
+//
+// It returns an empty string whenever it cannot deliver one - no title model,
+// a failed request, or a reply that is only reasoning - which tells the caller
+// to fall back rather than to abort naming the session.
 func (a *agent) askForTitle(ctx context.Context, sessionID string, content string) string {
 	if a.titleProvider == nil {
-		logging.Debug("No title model configured, falling back to the first message")
+		logging.WarnPersist("No title model configured, falling back to the first message")
 		return ""
 	}
 
@@ -206,11 +230,145 @@ func (a *agent) askForTitle(ctx context.Context, sessionID string, content strin
 		return ""
 	}
 	if response == nil {
+		logging.WarnPersist("title model returned no response at all, falling back to the first message")
 		return ""
 	}
 
-	title := strings.TrimSpace(strings.ReplaceAll(response.Content, "\n", " "))
+	// Reasoning models put their scratchpad in the content channel rather than a
+	// reasoning one, so the raw reply can open with "Here's a thinking process".
+	// cleanTitle cuts that away and returns an empty string when what survives is
+	// only scratchpad, which asks the caller to fall back.
+	raw := response.Content
+	title := cleanTitle(raw)
+	if title == "" {
+		logging.WarnPersist(fmt.Sprintf("title model reply had no usable title, falling back to the first message: %q", truncateForLog(raw)))
+		return ""
+	}
 	return truncateTitle(title)
+}
+
+// truncateForLog keeps a logged model reply to one short line. A reasoning model
+// can return a page of scratchpad, and the whole of it has no place in a log
+// meant to say what went wrong.
+func truncateForLog(s string) string {
+	s = strings.Join(strings.Fields(s), " ")
+	runes := []rune(s)
+	if len(runes) <= 80 {
+		return s
+	}
+	return string(runes[:80]) + "..."
+}
+
+// thinkingTags are the reasoning wrappers a model may emit into its content
+// channel. Everything between them is scratchpad, not an answer.
+var thinkingTags = []struct{ open, close string }{
+	{"<thinking>", "</thinking>"},
+	{"<think>", "</think>"},
+	{"<reasoning>", "</reasoning>"},
+}
+
+// thinkingPreambles are the ways a model announces its scratchpad in prose
+// before getting to the answer.
+var thinkingPreambles = []string{
+	"here's a thinking process:",
+	"here is my thinking process:",
+	"here is a thinking process:",
+	"here's my thinking process:",
+	"thinking process:",
+	"my thinking process:",
+	"let me think about this:",
+	"let me think through this:",
+	"let me analyze this:",
+	"reasoning:",
+	"analysis:",
+}
+
+// cleanTitle turns whatever the title model replied with into something usable
+// as a session name.
+//
+// Reasoning models routinely put their scratchpad in the content channel rather
+// than a reasoning one, so a raw reply can open with "Here's a thinking
+// process: 1. Analyze User Input...". Naming a session after that is noise, so
+// the wrappers and the prose preamble are cut away first. An empty result tells
+// the caller to fall back rather than to save a blank name.
+func cleanTitle(raw string) string {
+	title := strings.TrimSpace(raw)
+
+	for _, tag := range thinkingTags {
+		start := strings.Index(strings.ToLower(title), tag.open)
+		end := strings.Index(strings.ToLower(title), tag.close)
+		if start != -1 && end > start {
+			title = title[:start] + title[end+len(tag.close):]
+		}
+	}
+
+	lines := strings.Split(title, "\n")
+	for i, line := range lines {
+		lines[i] = strings.Join(strings.Fields(line), " ")
+	}
+
+	// A prose preamble opens the reply, sometimes on its own line and sometimes
+	// with the answer trailing along on the same one. Cut the words either way.
+	for len(lines) > 0 {
+		trimmed := strings.TrimSpace(lines[0])
+		if trimmed == "" {
+			lines = lines[1:]
+			continue
+		}
+		lower := strings.ToLower(trimmed)
+		matched := false
+		for _, preamble := range thinkingPreambles {
+			switch {
+			case lower == preamble:
+				lines = lines[1:]
+				matched = true
+			case strings.HasPrefix(lower, preamble+" "):
+				lines[0] = strings.TrimSpace(trimmed[len(preamble):])
+				matched = true
+			}
+			if matched {
+				break
+			}
+		}
+		if !matched {
+			break
+		}
+	}
+
+	if len(lines) > 0 {
+		lines[0] = headingMarker.ReplaceAllString(strings.TrimSpace(lines[0]), "")
+	}
+
+	// What sits under a preamble is usually a numbered step list, which reads
+	// badly as a name. The first line that is not a step is the closest thing to
+	// a real answer, and when every line is a step there is no answer to keep.
+	for _, line := range lines {
+		trimmed := strings.TrimSpace(line)
+		if trimmed == "" || stepMarker.MatchString(trimmed) {
+			continue
+		}
+		return strings.TrimSpace(strings.Trim(stripMarkdown(trimmed), `"'`))
+	}
+	return ""
+}
+
+var (
+	// stepMarker opens a line of a numbered or bulleted list. Those lines belong
+	// to the scratchpad rather than to the answer.
+	stepMarker    = regexp.MustCompile(`^(?:\d+\s*[.)\-–—:]|[*•])\s+`)
+	headingMarker = regexp.MustCompile(`^#{1,6}\s*`)
+
+	markdownBold     = regexp.MustCompile(`\*\*([^*]+)\*\*`)
+	markdownEmphasis = regexp.MustCompile(`(^|[\s(])[*_]([^*\s_][^*_]*?)[*_]($|[\s.,;:!?)]|$)`)
+)
+
+// stripMarkdown removes the decoration models like to wrap a one line answer in,
+// leaving bare text for the session list.
+func stripMarkdown(s string) string {
+	s = markdownBold.ReplaceAllString(s, "$1")
+	s = markdownEmphasis.ReplaceAllString(s, "$1$2")
+	s = strings.ReplaceAll(s, "`", "")
+	return strings.TrimSpace(s)
 }
 
 // fallbackTitle turns the first message of a session into a title without asking

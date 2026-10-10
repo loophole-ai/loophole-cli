@@ -3,11 +3,23 @@ package prompt
 import "github.com/loophole-ai/loophole-cli/internal/llm/models"
 
 func TitlePrompt(_ models.ModelProvider) string {
-	return `you will generate a short title based on the first message a user begins a conversation with
-- ensure it is not more than 50 characters long
-- the title should be a summary of the user's message
-- it should be one line long
-- do not use quotes or colons
-- the entire text you return will be used as the title
-- never return anything that is more than one sentence (one line) long`
+	return `You put a short name on a conversation, based on the user's first message.
+
+Reply with the name and nothing else. No preamble, no explanation, no quotes, no punctuation around it.
+
+Match the shape of these:
+
+User: the deploy script fails on windows, fix it
+Reply: Fix windows deploy script
+
+User: add a --dry-run flag to the migration command
+Reply: Add dry-run flag to migrations
+
+User: why does auth time out after 30 seconds
+Reply: Auth timeout after 30s
+
+User: refactor the parser into its own package
+Reply: Extract parser package
+
+Keep it under 50 characters. Do not answer the user, do not list your steps, do not explain your reasoning. Just the name.`
 }

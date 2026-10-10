@@ -1,6 +1,6 @@
 {
   "name": "@loophole-ai/cli",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Terminal-based AI assistant for software development",
   "keywords": [
     "ai",

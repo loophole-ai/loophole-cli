@@ -19,6 +19,12 @@ type SessionSelectedMsg struct {
 // CloseSessionDialogMsg is sent when the session dialog is closed
 type CloseSessionDialogMsg struct{}
 
+// SessionDeleteConfirmMsg is sent when the delete key is pressed, so the caller
+// can ask for confirmation before anything is removed.
+type SessionDeleteConfirmMsg struct {
+	Session session.Session
+}
+
 // SessionDialog interface for the session switching dialog
 type SessionDialog interface {
 	tea.Model
@@ -42,6 +48,7 @@ type sessionKeyMap struct {
 	Escape key.Binding
 	J      key.Binding
 	K      key.Binding
+	Delete key.Binding
 }
 
 var sessionKeys = sessionKeyMap{
@@ -68,6 +75,10 @@ var sessionKeys = sessionKeyMap{
 	K: key.NewBinding(
 		key.WithKeys("k"),
 		key.WithHelp("k", "previous session"),
+	),
+	Delete: key.NewBinding(
+		key.WithKeys("d"),
+		key.WithHelp("d", "delete session"),
 	),
 }
 
@@ -97,6 +108,11 @@ func (s *sessionDialogCmp) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		case key.Matches(msg, sessionKeys.Escape):
 			return s, util.CmdHandler(CloseSessionDialogMsg{})
+		case key.Matches(msg, sessionKeys.Delete):
+			if len(s.sessions) > 0 {
+				return s, util.CmdHandler(SessionDeleteConfirmMsg{Session: s.sessions[s.selectedIdx]})
+			}
+			return s, nil
 		}
 	case tea.WindowSizeMsg:
 		s.width = msg.Width

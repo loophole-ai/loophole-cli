@@ -363,13 +363,19 @@ func applyAgentDefaults(explicit map[AgentName]bool) {
 	}
 }
 
-// titleMaxTokens is the budget for the agent that names a session. A reasoning
-// model spends part of that budget thinking out loud, so with the flat budget
-// there was nothing left over for the title itself and the session stayed
-// unnamed.
+// titleMaxTokens is the budget for the agent that names a session.
+//
+// This is a ceiling, not a spend. Billing follows the tokens a model actually
+// emits, and it stops as soon as it is done, so a generous limit costs nothing
+// when the model behaves.
+//
+// A reasoning model needs room to get there first. Nemotron spent 987 tokens
+// thinking and then emitted eight characters of title; given 512 it hit the
+// ceiling mid-thought and returned no title at all. A model that does spiral
+// gets cut off here rather than draining a quota over a session name.
 func titleMaxTokens(model models.ModelID) int64 {
 	if modelInfo, ok := models.GetAllModels()[model]; ok && modelInfo.CanReason {
-		return 512
+		return 4096
 	}
 	return 80
 }

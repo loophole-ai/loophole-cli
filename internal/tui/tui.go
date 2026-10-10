@@ -129,6 +129,9 @@ type appModel struct {
 	showSessionDialog bool
 	sessionDialog     dialog.SessionDialog
 
+	showDeleteSession bool
+	deleteSession     dialog.DeleteSessionDialog
+
 	showCommandDialog bool
 	commandDialog     dialog.CommandDialog
 	commands          []dialog.Command
@@ -465,6 +468,40 @@ func (a *appModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 		return a, nil
 
+	case dialog.SessionDeleteConfirmMsg:
+		// The list stays open behind the confirmation, matching how the quit
+		// dialog layers over the chat.
+		a.deleteSession.SetSession(msg.Session)
+		a.showDeleteSession = true
+		return a, nil
+
+	case dialog.CloseDeleteSessionMsg:
+		a.showDeleteSession = false
+
+	case dialog.ConfirmDeleteSessionMsg:
+		a.showDeleteSession = false
+		// The session's files on disk are left alone. Only the row, its messages
+		// and the file records the CLI tracks are removed, so a mistaken delete
+		// leaves the written files recoverable.
+		ctx := context.Background()
+		if err := a.app.Sessions.Delete(ctx, msg.Session.ID); err != nil {
+			logging.Error("Failed to delete session", "error", err)
+			return a, util.ReportError(fmt.Errorf("could not delete session: %w", err))
+		}
+		if a.selectedSession.ID == msg.Session.ID {
+			// Deleting what you are looking at leaves nothing to look at, so a
+			// new session takes its place.
+			sess, err := a.app.Sessions.Create(ctx, "New Session")
+			if err != nil {
+				logging.Error("Failed to create replacement session", "error", err)
+				return a, util.ReportError(err)
+			}
+			a.selectedSession = sess
+			a.sessionDialog.SetSelectedSession(sess.ID)
+			return a, util.CmdHandler(chat.SessionSelectedMsg(sess))
+		}
+		return a, util.ReportInfo("Deleted session: " + msg.Session.Title)
+
 	case dialog.CommandSelectedMsg:
 		a.showCommandDialog = false
 		// Execute the command handler if available
@@ -660,6 +697,16 @@ func (a *appModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		a.quit = q.(dialog.QuitDialog)
 		cmds = append(cmds, quitCmd)
 		// Only block key messages send all other messages down
+		if _, ok := msg.(tea.KeyMsg); ok {
+			return a, tea.Batch(cmds...)
+		}
+	}
+	if a.showDeleteSession {
+		d, deleteCmd := a.deleteSession.Update(msg)
+		a.deleteSession = d.(dialog.DeleteSessionDialog)
+		cmds = append(cmds, deleteCmd)
+		// The confirmation sits on top of the session list, so it swallows
+		// keys first and the list underneath never sees them.
 		if _, ok := msg.(tea.KeyMsg); ok {
 			return a, tea.Batch(cmds...)
 		}
@@ -998,6 +1045,21 @@ func (a *appModel) View() string {
 		)
 	}
 
+	if a.showDeleteSession {
+		overlay := a.deleteSession.View()
+		row := lipgloss.Height(appView) / 2
+		row -= lipgloss.Height(overlay) / 2
+		col := lipgloss.Width(appView) / 2
+		col -= lipgloss.Width(overlay) / 2
+		appView = layout.PlaceOverlay(
+			col,
+			row,
+			overlay,
+			appView,
+			true,
+		)
+	}
+
 	if a.showModelDialog {
 		overlay := a.modelDialog.View()
 		row := lipgloss.Height(appView) / 2
@@ -1081,6 +1143,8 @@ func New(app *app.App) tea.Model {
 		help:          dialog.NewHelpCmp(),
 		quit:          dialog.NewQuitCmp(),
 		sessionDialog: dialog.NewSessionDialogCmp(),
+
+		deleteSession: dialog.NewDeleteSessionDialogCmp(),
 		commandDialog: dialog.NewCommandDialogCmp(),
 		modelDialog:   dialog.NewModelDialogCmp(),
 		permissions:   dialog.NewPermissionDialogCmp(),
